@@ -94,12 +94,15 @@ c11c_ada = adaptmean(c11c_xplus, full = TRUE)
 
 #------------- Plots
 
-pdf(file.path(outdir,'averaging2.pdf'),width = 6, height = 7)
-layout(1:3, heights = c(3,3,4))
-par(tcl=-0.4, mar=c(0,5,1,1), mgp=c(3,1.,0), las=1, cex.lab = 1.5)
+pdf(file.path(outdir,'averaging2.pdf'),width = 8, height = 7)
+layout(1:3, heights = c(6,6,7)) # Lowest frame bigger for x-title
+
+par(tcl=-0.4, mar=c(1,4,2,1), mgp=c(2.5,1.,0), las=1, cex.lab = 1.4, cex.main = 1.5)
 
 # 1
-udplot(c11f_x, c11f_y, shape='square', connect = FALSE, xtitle = "", ytitle = 'Bupivacaine (mg)', xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
+udplot(c11f_x, c11f_y, shape='square', connect = FALSE, 
+main = "Women (non-pregnant)", xtitle = "", ytitle = 'Bupivacaine (mg)', 
+xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
 points(31, c11f_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
 # Showing reversals for this one
 frevs = reversals(c11f_y)
@@ -111,8 +114,12 @@ abline(h = c11f_weth, lty = 3)
 abline(h = c11f_ada$signsmeans[1, c11f_ada$startpt], lty = 2, lwd = 1.5)
 
 # 2
-udplot(c11c_x, c11c_y, shape='square', connect = FALSE, xtitle = "", ytitle = 'Bupivacaine (mg)', xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
+udplot(c11c_x, c11c_y, shape='square', connect = FALSE,
+ main = "Women (C-Section)", xtitle = "", ytitle = 'Bupivacaine (mg)',
+ xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
 points(31, c11c_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
+crevs = reversals(c11c_y)
+points(crevs, c11c_x[crevs], cex = 3.5)
 
 # Estimates
 abline(h = c11c_rev)
@@ -120,9 +127,13 @@ abline(h = c11c_weth, lty = 3)
 abline(h = c11c_ada, lty = 2, lwd = 1.5)
 
 # 3
-par(mar=c(5,5,1,1), mgp=c(3,1.,0))
-udplot(c11m_x, c11m_y, shape='square', connect = FALSE, xtitle = "Patient Number", ytitle = 'Bupivacaine (mg)', xlim = c(1, 31), cex = ssize, ylim = c(2,11), doselabels = 2:11)
+par(mar=c(4,4,2,1))
+udplot(c11m_x, c11m_y, shape='square', connect = FALSE,
+ main = "Men", xtitle = "Patient Number", ytitle = 'Bupivacaine (mg)',
+ xlim = c(1, 31), cex = ssize, ylim = c(2,11), doselabels = 2:11)
 points(31, c11m_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
+mrevs = reversals(c11m_y)
+points(mrevs, c11m_x[mrevs], cex = 3.5)
 
 # Estimates
 abline(h = c11m_rev)
