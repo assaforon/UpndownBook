@@ -4,8 +4,6 @@ library(upndown)
 # For use on your own machine, change 'outdir' to where you want the figures saved
 outdir = ('../../output')
 
-
-
 ## Boundary Effect
 library(tis) # for barplot2(), shifted barplots
 
@@ -52,3 +50,85 @@ for (a in 0:3)
 }
 
  dev.off()
+ 
+# =============================================
+
+#### Reversals and estimates
+
+# =============================================
+
+## Plotting constants
+
+grey = 'grey60'
+ssize = 1.5
+
+# Camorcia et al. 2011
+# "Effect of sex and pregnancy on the potency of intrathecal bupivacaine..."
+# European Journal of Anaesthesiology 2011, Volume 28, p. 240-244
+
+# There were two female arms (c-section and non-pregnant) 
+#   and one male arm
+
+c11m_x = c(4:6, 5, 4:7, 6, 5, 6:4, 5:8, 7, 8 , 7, 8, 7:9, 8:11, 10, 9)
+c11m_xplus = c(c11m_x, 10)
+c11m_y = c( (1 - sign(diff(c11m_x)) )/ 2, 0) 
+c11m_rev = reversmean(c11m_xplus, c11m_y)
+c11m_weth = reversmean(c11m_xplus, c11m_y, all = FALSE, rstart = 1)
+c11m_ada = adaptmean(c11m_xplus, full = TRUE)
+
+c11f_x = c(4, 5, 4:6, 5:3, 4:7, rep(6:5, 3), 6, 7:4, 5, 6:4, 5, 6, 5)
+c11f_y = c( (1 - sign(diff(c11f_x)) )/ 2, 1) 
+c11f_xplus = c(c11f_x, 4)
+c11f_y = c( (1 - sign(diff(c11f_x)) )/ 2, 1) 
+c11f_rev = reversmean(c11f_xplus, c11f_y)
+c11f_weth = reversmean(c11f_xplus, c11f_y, all = FALSE, rstart = 1)
+c11f_ada = adaptmean(c11f_xplus, full = TRUE)
+
+c11c_x = c(4:2, rep(3:4, 3), 3, 2:4, 3, 2, 3, 2:3, rep(c(4, 3:5), 3) )
+c11c_y = c( (1 - sign(diff(c11c_x)) )/ 2, 1) 
+c11c_xplus = c(c11c_x, 4)
+c11c_y = c( (1 - sign(diff(c11c_x)) )/ 2, 1) 
+c11c_rev = reversmean(c11c_xplus, c11c_y)
+c11c_weth = reversmean(c11c_xplus, c11c_y, all = FALSE, rstart = 1)
+c11c_ada = adaptmean(c11c_xplus, full = TRUE)
+
+#------------- Plots
+
+pdf(file.path(outdir,'averaging2.pdf'),width = 6, height = 7)
+layout(1:3, heights = c(3,3,4))
+par(tcl=-0.4, mar=c(0,5,1,1), mgp=c(3,1.,0), las=1, cex.lab = 1.5)
+
+# 1
+udplot(c11f_x, c11f_y, shape='square', connect = FALSE, xtitle = "", ytitle = 'Bupivacaine (mg)', xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
+points(31, c11f_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
+# Showing reversals for this one
+frevs = reversals(c11f_y)
+points(frevs, c11f_x[frevs], cex = 3.5)
+
+# Estimates
+abline(h = c11f_rev)
+abline(h = c11f_weth, lty = 3)
+abline(h = c11f_ada$signsmeans[1, c11f_ada$startpt], lty = 2, lwd = 1.5)
+
+# 2
+udplot(c11c_x, c11c_y, shape='square', connect = FALSE, xtitle = "", ytitle = 'Bupivacaine (mg)', xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
+points(31, c11c_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
+
+# Estimates
+abline(h = c11c_rev)
+abline(h = c11c_weth, lty = 3)
+abline(h = c11c_ada, lty = 2, lwd = 1.5)
+
+# 3
+par(mar=c(5,5,1,1), mgp=c(3,1.,0))
+udplot(c11m_x, c11m_y, shape='square', connect = FALSE, xtitle = "Patient Number", ytitle = 'Bupivacaine (mg)', xlim = c(1, 31), cex = ssize, ylim = c(2,11), doselabels = 2:11)
+points(31, c11m_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
+
+# Estimates
+abline(h = c11m_rev)
+abline(h = c11m_weth, lty = 3)
+abline(h = c11m_ada$signsmeans[1, 16], lty = 2, lwd = 1.5)
+
+dev.off()
+
+
