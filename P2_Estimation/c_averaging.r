@@ -104,7 +104,7 @@ udplot(c11f_x, c11f_y, shape='square', connect = FALSE,
 main = "Women (non-pregnant)", xtitle = "", ytitle = 'Bupivacaine (mg)', 
 xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
 points(31, c11f_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
-# Showing reversals for this one
+# Showing reversals 
 frevs = reversals(c11f_y)
 points(frevs, c11f_x[frevs], cex = 3.5)
 
@@ -141,5 +141,80 @@ abline(h = c11m_weth, lty = 3)
 abline(h = c11m_ada$signsmeans[1, 16], lty = 2, lwd = 1.5)
 
 dev.off()
+
+
+### Demonstrating the dynamic estimator
+
+pdf(file.path(outdir,'averaging3.pdf'),width = 10, height = 8)
+layout(1:2, heights = c(6,7)) # Lowest frame bigger for x-title
+
+par(tcl=-0.4, mar=c(1,4,2,1), mgp=c(2.5,1.,0), las=1, cex.lab = 1.4, cex.main = 1.5)
+
+
+udplot(c11f_x, c11f_y, shape='square', connect = FALSE, 
+xtitle = "", ytitle = 'Bupivacaine (mg)', main = "Women (non-pregnant)",
+xlim = c(1, 31), cex = ssize, ylim = c(2,11), xaxt = 'n', doselabels = 2:11)
+points(31, c11f_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
+for(a in 1:c11f_ada$startpt) points(a, c11f_ada$signsmeans[1,a+1], pch = '_', cex=2)
+abline(v = 14.5, lwd = 1.5, lty = 3)
+
+par(mar=c(4,4,2,1))
+
+udplot(c11m_x, c11m_y, shape='square', connect = FALSE, 
+xtitle = "Patient Number", ytitle = 'Bupivacaine (mg)',  main = "Men",
+xlim = c(1, 31), cex = ssize, ylim = c(2,11), doselabels = 2:11)
+points(31, c11m_xplus[31], pch = 22, col = grey, bg = grey, cex = ssize)
+for(a in 1:c11m_ada$startpt) points(a, c11m_ada$signsmeans[1,a+1], pch = '_', cex=2)
+abline(v = 14.5, lwd = 1.5, lty = 3)
+
+dev.off()
+
+
+#------- Last but not least: Bootstrap F
+
+library(cir)
+
+
+c11m_dr = doseResponse(x=c11m_x, y=c11m_y)
+
+drplot(c11m_x, c11m_y, target = 0.5,
+		xtitle = 'Bupivacaine (mg)', ytitle = "Proportion Effective")
+		
+c11m_IR = oldPAVA(c11m_dr)
+
+c11m_CIR = cirPAVA(c11m_dr,full = TRUE, adaptiveShrink = TRUE, target = 0.5)
+
+c11m_boot = cirPAVA(c11m_dr,full = TRUE, adaptiveShrink = TRUE, target = 0.5, nmin = 1)
+
+xrange = range(c11m_boot$output$x)
+yrange = range(c11m_boot$output$y)
+
+yadd = c(yrange[1]/2, (1+yrange[2])/2)
+
+
+pdf(file.path(outdir,'averaging4.pdf'),width = 8, height = 4.5)
+
+par(tcl=-0.4, mar=c(4,4,1,1), mgp=c(2.5,1.,0), las=1, cex.lab = 1.2)
+
+drplot(c11m_x, c11m_y,
+		xtitle = 'Bupivacaine (mg)', ytitle = "Proportion Effective", xlim = c(xrange[1]-2, xrange[2]+2), las = 1, xaxt = 'n' ) 
+axis(1, at = 2:13)
+
+lines(y~x, data = c11m_CIR$shrinkage)		
+lines(c11m_dr$x, c11m_IR, lty = 3, lwd = 1.5)
+
+lines(c(xrange[1]-2, xrange[1]-1, c11m_boot$output$x, xrange[2]+1, xrange[2]+2),
+     c(0, yadd[1], c11m_boot$output$y, yadd[2], 1), lty = 2, lwd = 2)
+
+dev.off()
+
+
+
+
+		
+		
+
+
+
 
 
