@@ -3,6 +3,10 @@ library(cir)
 library(upndown)
 library(data.table)
 
+#### Const/Util
+
+outdir = '../../output'
+
 
 #### Functions to generate the dose-response scenarios
 
