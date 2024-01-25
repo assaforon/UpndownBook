@@ -37,6 +37,8 @@ weib90 = weib90c[weib90c$elig, ][1:nsim, ]
 
 fwrite(weib90, file = file.path(outdir, 'scenarios_weib90.csv') )
 
+# mycolors36 <- c("antiquewhite4","aquamarine3","aquamarine4","azure4","black","blue","blueviolet","brown","burlywood4","chartreuse","chartreuse4","chocolate","coral2","coral4","cornflowerblue","darkgoldenrod","darkgoldenrod1","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkolivegreen2","darkorange2","darkred","darksalmon","darkslateblue","plum4","sienna2","slategray3","springgreen3","steelblue4","tan4","thistle4","tomato2","violet","violetred4")
+
 # mycolors28 <- c('red2','chartreuse2','gray35','cyan3','violetred3',mycolors36[-c(8,14,24,4,9,33,23,13,34,28,21,10,36)])
 # mycolors28=mycolors28[c(9,1:4,10:13,16:28,15,5:8,14)]
 
