@@ -1,5 +1,4 @@
 source('simulation_header.r')
-source("C:\\Documents\\dosefinding\\GenericSimCode\\MichelesPalette.r")
 
 #------------------------------ Constants / Utilities --------------------------#
 set.seed(414155)
@@ -38,6 +37,8 @@ weib90 = weib90c[weib90c$elig, ][1:nsim, ]
 
 fwrite(weib90, file = file.path(outdir, 'scenarios_weib90.csv') )
 
+# mycolors28 <- c('red2','chartreuse2','gray35','cyan3','violetred3',mycolors36[-c(8,14,24,4,9,33,23,13,34,28,21,10,36)])
+# mycolors28=mycolors28[c(9,1:4,10:13,16:28,15,5:8,14)]
 
 # plot(c(1,12),0:1, type='n')
 # for(a in 1:56) lines(1:12, pweib3(1:12, shp=weib90$shap[a], scl=weib90$scal[a], shift=weib90$shif[a]+weib90$offs[a]), col= mycolors28[a %% 28 + 1])
