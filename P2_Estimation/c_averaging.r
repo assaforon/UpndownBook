@@ -74,23 +74,21 @@ c11m_xplus = c(c11m_x, 10)
 c11m_y = c( (1 - sign(diff(c11m_x)) )/ 2, 0) 
 c11m_rev = reversmean(c11m_xplus, c11m_y)
 c11m_weth = reversmean(c11m_xplus, c11m_y, all = FALSE, rstart = 1)
-c11m_ada = adaptmean(c11m_xplus, full = TRUE)
+c11m_ada = dynamean(c11m_xplus, full = TRUE)
 
 c11f_x = c(4, 5, 4:6, 5:3, 4:7, rep(6:5, 3), 6, 7:4, 5, 6:4, 5, 6, 5)
 c11f_y = c( (1 - sign(diff(c11f_x)) )/ 2, 1) 
 c11f_xplus = c(c11f_x, 4)
-c11f_y = c( (1 - sign(diff(c11f_x)) )/ 2, 1) 
 c11f_rev = reversmean(c11f_xplus, c11f_y)
 c11f_weth = reversmean(c11f_xplus, c11f_y, all = FALSE, rstart = 1)
-c11f_ada = adaptmean(c11f_xplus, full = TRUE)
+c11f_ada = dynamean(c11f_xplus, full = TRUE)
 
 c11c_x = c(4:2, rep(3:4, 3), 3, 2:4, 3, 2, 3, 2:3, rep(c(4, 3:5), 3) )
-c11c_y = c( (1 - sign(diff(c11c_x)) )/ 2, 1) 
 c11c_xplus = c(c11c_x, 4)
 c11c_y = c( (1 - sign(diff(c11c_x)) )/ 2, 1) 
 c11c_rev = reversmean(c11c_xplus, c11c_y)
 c11c_weth = reversmean(c11c_xplus, c11c_y, all = FALSE, rstart = 1)
-c11c_ada = adaptmean(c11c_xplus, full = TRUE)
+c11c_ada = dynamean(c11c_xplus, full = TRUE)
 
 #------------- Plots
 
