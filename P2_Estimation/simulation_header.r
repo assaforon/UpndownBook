@@ -1,4 +1,4 @@
-rm(list=ls())
+# rm(list=ls())
 library(cir)
 library(upndown)
 library(data.table)
@@ -7,13 +7,17 @@ library(data.table)
 
 outdir = '../../output'
 
-#### Simple performance metrics
+#### Simple performance metrics, with some twists
+
 rmse = function(x,ref,na.rm=TRUE) sqrt(mean((x-ref)^2,na.rm=na.rm))
 bias = function(x,ref,na.rm=TRUE) mean(x-ref,na.rm=na.rm)
 # Quantile of absolute error
-qae = function(x,ref,na.rm=TRUE, p = 0.95) quantile(abs(x-ref), probs = p, na.rm=na.rm)
-
-
+qae = function(x,ref,na.rm=TRUE, p = 0.95) 
+	quantile(abs(x-ref), probs = p, na.rm=na.rm, type = 6)
+# Combos galore!
+duo = function(x,ref,na.rm=TRUE) c(rmse=rmse(x,ref), bias=bias(x,ref) )
+trio = function(x,ref,na.rm=TRUE, p=0.95) c(rmse=rmse(x,ref), bias=bias(x,ref), 
+		QAE = qae(x,ref, p=p) )
 
 ####----------------------- Functions to generate the dose-response scenarios
 
@@ -27,107 +31,137 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 
 ####---------------- Batch calculation of estimators and their metrics  ###########
 
-estbatch <- function(simdat, truth, target, bpt=target, rawout=FALSE, dots = TRUE, 
-               B = 10, desfun, desargs, doseset, conf = 0.9)
+estbatch <- function(simdat, truth, target, bpt=target, rawout=FALSE, cores = 6,
+            B = 250, randboot = TRUE, desfun, desargs, doseset = NULL, conf = 0.9, bigerr = 0.95)
 
 {
+cat(base::date(), '\n')
 require(cir)
 require(upndown)
 require(plyr)
 require(data.table)
+require(doParallel)
+
+cl <- makeCluster(cores, type = "SOCK")
+registerDoParallel(cl)
 
 sizes=dim(simdat$response)
 n=sizes[1]
 nsim=sizes[2]
 M = dim(simdat$scenarios)[1]
+if(is.null(doseset)) doseset = 1:M
 if(length(doseset) != M) stop('Mistmatch in length of dose set.\n')
 # interval tails
 ctail = (1 - conf) / 2
 
-ests = data.table(true=truth)
-cis = copy(ests)
+# If all identical and truth is a scalar:
+if(length(truth) == 1) truth = rep(truth, nsim)
+if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 
-for (a in 1:nsim)
-{
+
+ests <- foreach(a = 1:nsim, .combine = 'rbind', 
+			.packages = c('cir','upndown','plyr') ) %dopar%  {
 ### First, generating the bootstrap sample for all CI estimation
 #      (and we get dynamean() bootstrap "for free")
+	eout = data.frame(true = truth[a])
+	boots = dfboot(simdat$doses[1:n, a], simdat$responses[ ,a], B=B, doses = doseset,
+				design = desfun, desArgs = desargs, showdots = FALSE,
+				target = target, balancePt = bpt, full = TRUE, randstart = randboot)
+#				return(boots)
 
-	boots = dfboot(simdat$dose[1:n, a], simdat$response[ ,a], B=B, doses = doseset,
-				design = desfun, desArgs = desargs, target = target, balancePt = bpt)
 # "Dressing up" the dose levels (which are 1:m in the progress loop above) with real values
-    bootdoses = suppressMessages(plyr::mapvalues(boots$doses, 1:M, doseset) )
+    if(any(doseset != 1:M)) bootdoses = suppressMessages(plyr::mapvalues(boots$x, 1:M, doseset) ) else bootdoses = boots$x
 
 ### Averaging estimators
-	ests$dm48[a] = dixonmood(simdat$dose[1:n, a], simdat$response[ ,a])
-	ests$all1[a] = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, conf = NULL)
-	ests$all3[a] = reversmean(simdat$dose[,a],simdat$response[,a],rstart=3, conf = NULL)
+	eout$dm48 = dixonmood(simdat$dose[1:n, a], simdat$response[ ,a])
+	eout$all1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, conf = NULL)
+	eout$all3 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=3, conf = NULL)
 # Wetherill's estimator
-	ests$rev1[a] = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, , conf = NULL)
-	ests$dyna[a] = dynamean(simdat$dose[,a], maxExclude = 1/2, conf = NULL)
+	eout$rev1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, , conf = NULL)
+	eout$dyna = dynamean(simdat$dose[,a], maxExclude = 1/2, conf = NULL)
 	
+#	return(eout)
+
 ### isotonics
 	tmp1 = udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
 	balancePt = bpt, conf = conf)
 	tmp2 = udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
 	balancePt = bpt, conf = conf, estfun = oldPAVA)
-	ests$cir[a] = tmp1$point
-	ests$ir[a] = tmp2$point
+	eout$cir = tmp1$point
+	eout$ir = tmp2$point
+
 
 #### CI
 
 # Isotonic is simplest:
-	cis$cirl[a] = tmp1[3]
-	cis$ciru[a] = tmp1[4]
-	cis$irl[a] = tmp2[3]
-	cis$iru[a] = tmp2[4]
+	eout$cirl = unlist(tmp1[3])
+	eout$ciru = unlist(tmp1[4])
+	eout$irl = unlist(tmp2[3])
+	eout$iru = unlist(tmp2[4])
 
-	tmp = quantile(boots$ests, probs = c(tail, 1-tail), type = 6)
-	cis$dynal[a] = tmp[1]
-	cis$dynau[a] = tmp[2]
+	tmp = quantile(boots$ests, probs = c(ctail, 1-ctail), type = 6)
+	eout$dynal = tmp[1]
+	eout$dynau = tmp[2]
 
 # Bootstrap for the other avging
 	all3boot = rep(NA, B)
 	rev1boot = all3boot
 	cirboot = all3boot
 	for(b in 1:B) {
-			all3boot[b] = reversmean(x = bootdoses[,b], y = bootdat$responses[,b], 
+			all3boot[b] = reversmean(x = bootdoses[,b], y = boots$y[,b], 
                        conf = NULL)			
-			rev1boot[b] = reversmean(x = bootdoses[,b], y = bootdat$responses[,b], 
+			rev1boot[b] = reversmean(x = bootdoses[,b], y = boots$y[,b], 
                         all = FALSE, rstart = 1, conf = NULL)						
-			cirboot[b] = udest(x = bootdoses[1:n,b], y = bootdat$responses[,b], 
+			cirboot[b] = udest(x = bootdoses[1:n,b], y = boots$y[,b], 
                         conf = NULL, target = target, balancePt = bpt)	
 	}	
 
-	tmp = quantile(all3boot, probs = c(tail, 1-tail), type = 6, na.rm = TRUE)
-	cis$all3l[a] = tmp[1]
-	cis$all3u[a] = tmp[2]
-	tmp = quantile(rev1boot, probs = c(tail, 1-tail), type = 6, na.rm = TRUE)
-	cis$rev1l[a] = tmp[1]
-	cis$rev1u[a] = tmp[2]
-	tmp = quantile(cirboot, probs = c(tail, 1-tail), type = 6, na.rm = TRUE)
-	cis$cbootl[a] = tmp[1]
-	cis$cbootu[a] = tmp[2]
-
-	if(dots & a%%10==0) cat('.')
-	if(dots & a%%100==0) cat('\n')
+	tmp = quantile(all3boot, probs = c(ctail, 1-ctail), type = 6, na.rm = TRUE)
+	eout$all3l = tmp[1]
+	eout$all3u = tmp[2]
+	tmp = quantile(rev1boot, probs = c(ctail, 1-ctail), type = 6, na.rm = TRUE)
+	eout$rev1l = tmp[1]
+	eout$rev1u = tmp[2]
+	tmp = quantile(cirboot, probs = c(ctail, 1-ctail), type = 6, na.rm = TRUE)
+	eout$cbootl = tmp[1]
+	eout$cbootu = tmp[2]
+	
+	eout
 }
+stopCluster(cl)
+cat(base::date(), '\n')
 
+setDT(ests)
+# ests[ , true := truth ]
 
 # returning everything:
 if(rawout) return(list(point=ests, ci=cis))
-# returning headline summaries:
-tmp=list(metrics=ests[,apply(.SD,2,duo,ref=true,na.rm=TRUE),.SDcol=names(ests)[-1]],
-	irmissed=mean(is.na(ests$ir)))
-if(ci) ## CI performance
-{
-	tmp$coverage=cis[,list(all3n=mean(all3lo0<=true & all3hi0>=true,na.rm=TRUE),
-	all3=mean(all3lo<=true & all3hi>=true,na.rm=TRUE),
-	all3Wid=mean(all3hi-all3lo,na.rm=TRUE),
-	cir=mean(cirl<=true & ciru>=true,na.rm=TRUE),
-	ir=mean(irl<=true & iru>=true,na.rm=TRUE),
-	cirWid=mean(ciru-cirl,na.rm=TRUE), cirWid_old=mean(ciru_old-cirl_old,na.rm=TRUE), 
-	irWid=mean(iru-irl,na.rm=TRUE))]
-}
+
+#### Otherwise returning headline summaries
+
+### Point estimate performance
+tmp=list(metrics=ests[ ,apply(.SD, 2, trio, ref=true, p=bigerr), .SDcol=names(ests)[2:8] ],
+	cirmissed=mean(is.na(ests$cir)), n = n, ensemble = nsim)
+
+### CI coverage
+
+tmp$coverage = ests[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
+	rev1 = mean(rev1l<=true & rev1u>=true, na.rm=TRUE),
+	dyna = mean(dynal<=true & dynau>=true, na.rm=TRUE),
+	cir = mean(cirl<=true & ciru>=true, na.rm=TRUE),
+	ir = mean(irl<=true & iru>=true, na.rm=TRUE),
+	cirboot = mean(cbootl<=true & cbootu>=true, na.rm=TRUE)
+	) ]
+
+### CI width
+
+tmp$widths = ests[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
+	rev1 = mean(rev1u - rev1l, na.rm=TRUE),
+	dyna = mean(dynau - dynal, na.rm=TRUE),
+	cir=mean(ciru - cirl, na.rm=TRUE),
+	ir=mean(iru - irl, na.rm=TRUE),
+	cirboot = mean(cbootu - cbootl, na.rm=TRUE) ) ]
+
 tmp
 }
 
