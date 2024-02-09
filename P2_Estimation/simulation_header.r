@@ -2,21 +2,23 @@
 library(cir)
 library(upndown)
 library(data.table)
+setDTthreads(4)
 
 ####----------------------- Constants and quick Utilities
 
 outdir = '../../output'
+source('code_for_Assaf.R')
 
 #### Simple performance metrics, with some twists
 
 rmse = function(x,ref,na.rm=TRUE) sqrt(mean((x-ref)^2,na.rm=na.rm))
 bias = function(x,ref,na.rm=TRUE) mean(x-ref,na.rm=na.rm)
 # Quantile of absolute error
-qae = function(x,ref,na.rm=TRUE, p = 0.95) 
+qae = function(x,ref,na.rm=TRUE, p = 0.9) 
 	quantile(abs(x-ref), probs = p, na.rm=na.rm, type = 6)
 # Combos galore!
 duo = function(x,ref,na.rm=TRUE) c(rmse=rmse(x,ref), bias=bias(x,ref) )
-trio = function(x,ref,na.rm=TRUE, p=0.95) c(rmse=rmse(x,ref), bias=bias(x,ref), 
+trio = function(x,ref,na.rm=TRUE, p=0.9) c(rmse=rmse(x,ref), bias=bias(x,ref), 
 		QAE = qae(x,ref, p=p) )
 
 ####----------------------- Functions to generate the dose-response scenarios
@@ -31,8 +33,11 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 
 ####---------------- Batch calculation of estimators and their metrics  ###########
 
+### Parallelized for Windows environment via 'foreach'
+
 estbatch <- function(simdat, truth, target, bpt=target, rawout=FALSE, cores = 6,
-            B = 250, randboot = TRUE, desfun, desargs, doseset = NULL, conf = 0.9, bigerr = 0.95)
+            B = 250, randboot = TRUE, desfun, desargs, doseset = NULL, 
+			conf = 0.9, bigerr = 0.9, addLiao = FALSE)
 
 {
 cat(base::date(), '\n')
@@ -77,7 +82,7 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 	eout$all1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, conf = NULL)
 	eout$all3 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=3, conf = NULL)
 # Wetherill's estimator
-	eout$rev1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, , conf = NULL)
+	eout$rev1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, all=FALSE, conf = NULL)
 	eout$dyna = dynamean(simdat$dose[,a], maxExclude = 1/2, conf = NULL)
 	
 #	return(eout)
@@ -98,7 +103,14 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 	eout$ciru = unlist(tmp1[4])
 	eout$irl = unlist(tmp2[3])
 	eout$iru = unlist(tmp2[4])
-
+	if(addLiao)
+	{
+		tmp3 = udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
+				balancePt = bpt, conf = conf, intfun = liaoCI)
+		eout$liaol = unlist(tmp3[3])
+		eout$laiuu = unlist(tmp4[4])
+	}
+	
 	tmp = quantile(boots$ests, probs = c(ctail, 1-ctail), type = 6)
 	eout$dynal = tmp[1]
 	eout$dynau = tmp[2]
@@ -154,12 +166,16 @@ tmp$coverage = ests[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
 	) ]
 
 ### CI width
-
+	ests[ , cirfin := (is.finite(ciru) & is.finite(cirl) ) ]
+	ests[ , irfin :=  (is.finite(iru) & is.finite(irl) ) ]
+	
 tmp$widths = ests[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
 	rev1 = mean(rev1u - rev1l, na.rm=TRUE),
 	dyna = mean(dynau - dynal, na.rm=TRUE),
-	cir=mean(ciru - cirl, na.rm=TRUE),
-	ir=mean(iru - irl, na.rm=TRUE),
+	cir = mean(ciru[cirfin] - cirl[cirfin]),
+	ir = mean(iru[irfin] - irl[irfin]),
+	cfinite = mean(cirfin) , ifinite = mean(irfin),
+#	liao = ifelse(addLiao, mean(liaou - liaol, na.rm=TRUE), NA),
 	cirboot = mean(cbootu - cbootl, na.rm=TRUE) ) ]
 
 tmp
