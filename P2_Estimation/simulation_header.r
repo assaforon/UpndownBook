@@ -153,7 +153,8 @@ if(rawout) return(list(point=ests, ci=cis))
 
 ### Point estimate performance
 tmp=list(metrics=ests[ ,apply(.SD, 2, trio, ref=true, p=bigerr), .SDcol=names(ests)[2:8] ],
-	cirmissed=mean(is.na(ests$cir)), n = n, ensemble = nsim)
+	cirmissed=mean(is.na(ests$cir)), n = n, ensemble = nsim, 
+	target = target, startpt = simdat$doses[1,1], targloc = mean(truth))
 
 ### CI coverage
 

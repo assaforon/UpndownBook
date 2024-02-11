@@ -16,7 +16,7 @@ weib90parm = fread(file.path(outdir, 'scenarios_weib90.csv') )
 
 #### Constants
 
-nsim = 12 # This overrides 'nsim' in the scenario-generation scripts
+nsim = 400 # This overrides 'nsim' in the scenario-generation scripts
 M = 12
 n = 60
 ktarg90 = k2targ(6)
@@ -128,10 +128,10 @@ bw90lomid_slow = dfsim(60, starting = lostart, Fvals=weib90F, ensemble=nsim,
 						thresholds = thresh90w)					
 estbw90lomid_slow = estbatch(bw90lomid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
 					 desfun=bcd, desargs=b90list)
-					
-cat('b variants\n')					
-					
-					
+
+save.image(file.path(outdir, 'grandsim90w.RData'))					
+cat('b variants and done.\n')					
+									
 
 
 
