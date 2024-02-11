@@ -67,7 +67,7 @@ if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 ests <- foreach(a = 1:nsim, .combine = 'rbind', 
 			.packages = c('cir','upndown','plyr') ) %dopar%  {
 ### First, generating the bootstrap sample for all CI estimation
-#      (and we get dynamean() bootstrap "for free")
+#      (and we get dynamean() bootstrap CI's "for free")
 	eout = data.frame(true = truth[a])
 	boots = dfboot(simdat$doses[1:n, a], simdat$responses[ ,a], B=B, doses = doseset,
 				design = desfun, desArgs = desargs, showdots = FALSE,
