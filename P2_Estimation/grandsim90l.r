@@ -80,12 +80,12 @@ kl90minhi5 = dfsim(n, starting = 1, Fvals=logi90Fu, ensemble=nsim,
 						desArgs=list(k=5, lowTarget=FALSE, fastStart=TRUE), 
 						thresholds = thresh90l)					
 estkl90minhi5 = estbatch(kl90minhi5, truth=logi90parm$t90[1:nsim]+3, target=.9, 
-					bpt=ktarg90, desfun=krow, desargs=k90list)
+					bpt=k2targ(5), desfun=krow, desargs=k90list)
 kl90minhi7 = dfsim(n, starting = 1, Fvals=logi90Fu, ensemble=nsim,
 						desArgs=list(k=7, lowTarget=FALSE, fastStart=TRUE), 
 						thresholds = thresh90l)					
 estkl90minhi7 = estbatch(kl90minhi7, truth=logi90parm$t90[1:nsim]+3, target=.9, 
-					bpt=ktarg90, desfun=krow, desargs=k90list)
+					bpt=k2targ(7), desfun=krow, desargs=k90list)
 
 cat('k variants\n')						
 ########### BCD standard	

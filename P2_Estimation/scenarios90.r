@@ -16,9 +16,9 @@ buff90 = 1.5
 #------------------------------ Weibull --------------------------#
 
 
-weib90c = data.table(scal = runif(buff90*nsim, 2, 15),
+weib90c = data.table(scal = runif(buff90*nsim, 1, 15),
 					# shap = runif(buff90*nsim, .5, 10),
-					shap = rgamma(buff90*nsim, shape = 1.5, scale = 1.5) + 0.8,
+					shap = rgamma(buff90*nsim, shape = 1.5, scale = 2.5) + 0.8,
 					offs = runif(buff90*nsim, -.5, .5) )
 					
 weib90c[ , shif := weibshift(shp=shap, scl=scal, targx = midtarg, targy = 0.9) ]

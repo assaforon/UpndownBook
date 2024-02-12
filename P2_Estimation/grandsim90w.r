@@ -16,7 +16,8 @@ weib90parm = fread(file.path(outdir, 'scenarios_weib90.csv') )
 
 #### Constants
 
-nsim = 400 # This overrides 'nsim' in the scenario-generation scripts
+set.seed(79286)
+nsim = 500 # This overrides 'nsim' in the scenario-generation scripts
 M = 12
 n = 60
 ktarg90 = k2targ(6)
@@ -31,12 +32,10 @@ weib90F = weib90parm[1:nsim, ][ ,as.vector(pweib3(1:M, shap, scal, shif+offs)),
 weib90Fu = weib90parm[1:nsim, ][ ,as.vector(pweib3((1:M)-3, shap, scal, shif+offs)), 
 					by = 'row0'] %$% matrix(V1, nrow = M)
 					
-# Generate response thresholds ("patients")'
+# Generate response thresholds ("patients")
 #  (we use the same thresholds throughout, to eliminate this variability source)
-#  (but a separate one for each distribution, just in case we got a slightly odd draw)
 
 thresh90w = matrix(runif(n*nsim), nrow=n)
-thresh90l = matrix(runif(n*nsim), nrow=n)
 					
 
 	
@@ -48,7 +47,10 @@ kw90lomid = dfsim(60, starting = lostart, Fvals=weib90F, ensemble=nsim,
 						desArgs=k90list, thresholds = thresh90w)					
 estkw90lomid = estbatch(kw90lomid, truth=weib90parm$t90[1:nsim], target=.9, 
 					bpt=ktarg90, desfun=krow, desargs=k90list)
-		
+	
+# Good pausing point to see the output of one framework 
+# stop('ha')	
+
 kw90himid = dfsim(60, starting = histart, Fvals=weib90F, ensemble=nsim,
 						desArgs=k90list, thresholds = thresh90w)					
 estkw90himid = estbatch(kw90himid, truth=weib90parm$t90[1:nsim], target=.9, 
@@ -84,12 +86,12 @@ kw90minhi5 = dfsim(60, starting = 1, Fvals=weib90Fu, ensemble=nsim,
 						desArgs=list(k=5, lowTarget=FALSE, fastStart=TRUE), 
 						thresholds = thresh90w)					
 estkw90minhi5 = estbatch(kw90minhi5, truth=weib90parm$t90[1:nsim]+3, target=.9, 
-					bpt=ktarg90, desfun=krow, desargs=k90list)
+					bpt=k2targ(5), desfun=krow, desargs=k90list)
 kw90minhi7 = dfsim(60, starting = 1, Fvals=weib90Fu, ensemble=nsim,
 						desArgs=list(k=7, lowTarget=FALSE, fastStart=TRUE), 
 						thresholds = thresh90w)					
 estkw90minhi7 = estbatch(kw90minhi7, truth=weib90parm$t90[1:nsim]+3, target=.9, 
-					bpt=ktarg90, desfun=krow, desargs=k90list)
+					bpt=k2targ(7), desfun=krow, desargs=k90list)
 
 cat('k variants\n')						
 ########### BCD standard	
