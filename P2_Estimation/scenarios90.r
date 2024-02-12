@@ -10,6 +10,8 @@ flat90 = 0.03
 low90 = 0.5
 buff90 = 1.5
 
+#### Note: the 'c' at the end of data table names indicated "candidate"
+#          as some scenarios will be filtered out for being too steep/flat
 
 #------------------------------ Weibull --------------------------#
 

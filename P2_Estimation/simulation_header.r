@@ -88,10 +88,10 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 #	return(eout)
 
 ### isotonics
-	tmp1 = udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
-	balancePt = bpt, conf = conf)
-	tmp2 = udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
-	balancePt = bpt, conf = conf, estfun = oldPAVA)
+	tmp1 = try(udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
+	balancePt = bpt, conf = conf) )
+	tmp2 = try(udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
+	balancePt = bpt, conf = conf, estfun = oldPAVA) )
 	eout$cir = tmp1$point
 	eout$ir = tmp2$point
 
@@ -99,10 +99,10 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 #### CI
 
 # Isotonic is simplest:
-	eout$cirl = unlist(tmp1[3])
-	eout$ciru = unlist(tmp1[4])
-	eout$irl = unlist(tmp2[3])
-	eout$iru = unlist(tmp2[4])
+	eout$cirl = ifelse(is.finite(tmp1$point), unlist(tmp1[3]), NA)
+	eout$ciru = ifelse(is.finite(tmp1$point), unlist(tmp1[4]), NA)
+	eout$irl = ifelse(is.finite(tmp2$point), unlist(tmp2[3]), NA)
+	eout$iru = ifelse(is.finite(tmp2$point), unlist(tmp2[4]), NA)
 	if(addLiao)
 	{
 		tmp3 = udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
@@ -124,8 +124,9 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
                        conf = NULL)			
 			rev1boot[b] = reversmean(x = bootdoses[,b], y = boots$y[,b], 
                         all = FALSE, rstart = 1, conf = NULL)						
-			cirboot[b] = udest(x = bootdoses[1:n,b], y = boots$y[,b], 
-                        conf = NULL, target = target, balancePt = bpt)	
+			cirboot[b] = try(udest(x = bootdoses[1:n,b], y = boots$y[,b], 
+                        conf = NULL, target = target, balancePt = bpt)	)
+						if(!is.finite(cirboot[b])) cirboot[b] = NA
 	}	
 
 	tmp = quantile(all3boot, probs = c(ctail, 1-ctail), type = 6, na.rm = TRUE)
