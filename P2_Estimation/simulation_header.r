@@ -35,7 +35,7 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 
 ### Parallelized for Windows environment via 'foreach'
 
-estbatch <- function(simdat, truth, target, bpt=target, rawout=FALSE, cores = 6,
+estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 6,
             B = 250, randboot = TRUE, desfun, desargs, doseset = NULL, 
 			conf = 0.9, bigerr = 0.9, addLiao = FALSE)
 
@@ -148,7 +148,7 @@ setDT(ests)
 # ests[ , true := truth ]
 
 # returning everything:
-if(rawout) return(list(point=ests, ci=cis))
+if(rawout) return(ests)
 
 #### Otherwise returning headline summaries
 
