@@ -36,8 +36,8 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 ### Parallelized for Windows environment via 'foreach'
 
 estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 6,
-            B = 250, randboot = TRUE, desfun, desargs, doseset = NULL, 
-			conf = 0.9, bigerr = 0.9, addLiao = FALSE)
+            B = 250, randboot = TRUE, cirb = TRUE, desfun=krow, desargs=list(k=1), 
+			doseset = NULL, conf = 0.9, bigerr = 0.9, addLiao = FALSE)
 
 {
 cat(base::date(), '\n')
@@ -84,19 +84,16 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 # Wetherill's estimator
 	eout$rev1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, all=FALSE, conf = NULL)
 	eout$dyna = dynamean(simdat$dose[,a], maxExclude = 1/2, conf = NULL)
-	
-#	return(eout)
 
 ### isotonics
 	tmp1 = try(udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
 	balancePt = bpt, conf = conf) )
 	tmp2 = try(udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
 	balancePt = bpt, conf = conf, estfun = oldPAVA) )
-	eout$cir = tmp1$point
-	eout$ir = tmp2$point
+	eout$cir = ifelse(is.finite(tmp1$point), tmp1$point, NA)
+	eout$ir = ifelse(is.finite(tmp2$point),tmp2$point, NA)
 
-
-#### CI
+#### CIs
 
 # Isotonic is simplest:
 	eout$cirl = ifelse(is.finite(tmp1$point), unlist(tmp1[3]), NA)
@@ -110,23 +107,29 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 		eout$liaol = unlist(tmp3[3])
 		eout$laiuu = unlist(tmp4[4])
 	}
+
+# Dynamic mean also already available via the dfboot call:
 	
 	tmp = quantile(boots$ests, probs = c(ctail, 1-ctail), type = 6)
 	eout$dynal = tmp[1]
 	eout$dynau = tmp[2]
 
-# Bootstrap for the other avging
+# Bootstrap for the other estimators
+
 	all3boot = rep(NA, B)
 	rev1boot = all3boot
 	cirboot = all3boot
-	for(b in 1:B) {
+	for(b in 1:B) 
+	{
 			all3boot[b] = reversmean(x = bootdoses[,b], y = boots$y[,b], 
                        conf = NULL)			
 			rev1boot[b] = reversmean(x = bootdoses[,b], y = boots$y[,b], 
                         all = FALSE, rstart = 1, conf = NULL)						
-			cirboot[b] = try(udest(x = bootdoses[1:n,b], y = boots$y[,b], 
+			if(cirb) {
+				cirboot[b] = try(udest(x = bootdoses[1:n,b], y = boots$y[,b], 
                         conf = NULL, target = target, balancePt = bpt)	)
 						if(!is.finite(cirboot[b])) cirboot[b] = NA
+			}
 	}	
 
 	tmp = quantile(all3boot, probs = c(ctail, 1-ctail), type = 6, na.rm = TRUE)
@@ -135,9 +138,11 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 	tmp = quantile(rev1boot, probs = c(ctail, 1-ctail), type = 6, na.rm = TRUE)
 	eout$rev1l = tmp[1]
 	eout$rev1u = tmp[2]
+	if(cirb) {
 	tmp = quantile(cirboot, probs = c(ctail, 1-ctail), type = 6, na.rm = TRUE)
 	eout$cbootl = tmp[1]
 	eout$cbootu = tmp[2]
+	}
 	
 	eout
 }
@@ -145,9 +150,9 @@ stopCluster(cl)
 cat(base::date(), '\n')
 
 setDT(ests)
-# ests[ , true := truth ]
 
-# returning everything:
+##### returning everything raw - now it's the default:
+
 if(rawout) return(ests)
 
 #### Otherwise returning headline summaries
@@ -164,7 +169,7 @@ tmp$coverage = ests[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
 	dyna = mean(dynal<=true & dynau>=true, na.rm=TRUE),
 	cir = mean(cirl<=true & ciru>=true, na.rm=TRUE),
 	ir = mean(irl<=true & iru>=true, na.rm=TRUE),
-	cirboot = mean(cbootl<=true & cbootu>=true, na.rm=TRUE)
+	cirboot = ifelse(cirb, NA, mean(cbootl<=true & cbootu>=true, na.rm=TRUE) )
 	) ]
 
 ### CI width
@@ -178,7 +183,8 @@ tmp$widths = ests[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
 	ir = mean(iru[irfin] - irl[irfin]),
 	cfinite = mean(cirfin) , ifinite = mean(irfin),
 #	liao = ifelse(addLiao, mean(liaou - liaol, na.rm=TRUE), NA),
-	cirboot = mean(cbootu - cbootl, na.rm=TRUE) ) ]
+	cirboot = ifelse(cirb, NA, mean(cbootu - cbootl, na.rm=TRUE) ) 
+	) ] 
 
 tmp
 }

@@ -15,6 +15,7 @@ logi90parm = fread(file.path(outdir, 'scenarios_logi90.csv') )
 
 #### Constants
 
+set.seed(69942)
 nsim = 100 # This overrides 'nsim' in the scenario-generation scripts
 M = 12
 n = 60
