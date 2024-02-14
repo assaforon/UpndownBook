@@ -13,9 +13,13 @@ source('code_for_Assaf.R')
 
 rmse = function(x,ref,na.rm=TRUE) sqrt(mean((x-ref)^2,na.rm=na.rm))
 bias = function(x,ref,na.rm=TRUE) mean(x-ref,na.rm=na.rm)
-# Quantile of absolute error
+# Quantile of absolute error (now including missing values)
 qae = function(x,ref,na.rm=TRUE, p = 0.9) 
-	quantile(abs(x-ref), probs = p, na.rm=na.rm, type = 6)
+{
+	n = length(x)
+	tmp = sort( abs(x-ref) )
+	tmp[round(n*p)]
+}
 # Combos galore!
 duo = function(x,ref,na.rm=TRUE) c(rmse=rmse(x,ref), bias=bias(x,ref) )
 trio = function(x,ref,na.rm=TRUE, p=0.9) c(rmse=rmse(x,ref), bias=bias(x,ref), 
