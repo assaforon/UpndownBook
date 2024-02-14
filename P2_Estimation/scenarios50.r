@@ -47,7 +47,7 @@ fwrite(weib50, file = file.path(outdir, 'scenarios_weib50.csv') )
 
 mycolors36 <- c("antiquewhite4","aquamarine3","aquamarine4","azure4","black","blue","blueviolet","brown","burlywood4","chartreuse","chartreuse4","chocolate","coral2","coral4","cornflowerblue","darkgoldenrod","darkgoldenrod1","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkolivegreen2","darkorange2","darkred","darksalmon","darkslateblue","plum4","sienna2","slategray3","springgreen3","steelblue4","tan4","thistle4","tomato2","violet","violetred4")
 
-stop('checkiout')
+#stop('checkiout')
 
 # mycolors28 <- c('red2','chartreuse2','gray35','cyan3','violetred3',mycolors36[-c(8,14,24,4,9,33,23,13,34,28,21,10,36)])
 # mycolors28=mycolors28[c(9,1:4,10:13,16:28,15,5:8,14)]
@@ -59,25 +59,24 @@ stop('checkiout')
 #------------------------------ Logistic --------------------------#
 
 
-logi50c = data.table(scal = 2^runif(buff50*nsim, -1.7, 2.),
-					offs = runif(buff50*nsim, -.5, .5) )
+logi50c = data.table(scal = 2^runif(buff50*nsim, -2, 3.),
+					loc = runif(buff50*nsim, midtarg-.5, midtarg+.5) )
 					
-logi50c[ , shif := qlogis(0.9, scale=scal) - midtarg ]
-
 ### F values at neighboring levels
-logi50c[ , pp1 := plogis(midtarg+0.5, scale = scal, location =  offs-shif) ]
-logi50c[ , pm1 := plogis(midtarg-0.5, scale = scal, location =  offs-shif) ]
-logi50c[ , pm2 := plogis(midtarg-1.5, scale = scal, location =  offs-shif) ]
+logi50c[ , pp1 := plogis(midtarg+0.5, scale = scal, location =  loc) ]
+logi50c[ , pm1 := plogis(midtarg-0.5, scale = scal, location =  loc) ]
+logi50c[ , pm2 := plogis(midtarg-1.5, scale = scal, location =  loc) ]
 					
 # Targets: "exact..." (parametric)
-logi50c[ , t50 := qlogis(0.9, scale = scal, location = offs-shif) ]	
+logi50c[ , t50 := qlogis(0.5, scale = scal, location = loc) ]	
 # ... and interpolated between closest levels (F-bar)				
 logi50c[,row0 := 1:.N]
-logi50c[ , t50bar := approx(c(pm1, pp1), midtarg + 0:1 - 0.5, xout = 0.9)$y, by = 'row0']
+logi50c[ , t50bar := approx(c(pm1, pp1), midtarg + 0:1 - 0.5, xout = 0.5)$y, by = 'row0']
 
 
 # Eligibility indicator
-logi50c[ , elig := (pm1 > low50 & pp1-pm1 > flat50) ]
+logi50c[ , elig := (pm1 > low50 & pp1 < high50 & 
+						(pp1-pm1) %between% c(flat50, steep50) ) ]
 
 logi50 = logi50c[logi50c$elig, ][1:nsim, ]
 logi50[,row0 := 1:.N]
