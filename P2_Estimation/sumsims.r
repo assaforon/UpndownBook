@@ -9,37 +9,50 @@ source('simulation_header.r')
 
 ### Constants
 
-pointnames = c("dm48", "all1", "all3", "rev1", "dyna", "cir", "ir" )
+pointnames = c("dm48", "all1", "all3", "rev1", "dyna", "cir", "ir", "dual")
 pointnice = c('Dixon-Mood', paste('Avg. from' ,c('R1','R3') ), 'Revs. (Wetherill)', 
-			'Dynamic Avg.', 'CIR', 'IR' )
+			'Dynamic Avg.', 'CIR', 'IR', "Combination" )
 
-intnames = c("cir", "ir", "dyna", "all3", "rev1", "cboot")
+intnames = c("cir", "ir", "dyna", "all3", "rev1", "cirboot", 'dual')
 intnice = c('CIR', 'IR', 'Dynamic Avg.', 'Avg. from R3', 
-			'Revs. (Wetherill)', 'CIR Boot.' )
+			'Revs. (Wetherill)', 'CIR Boot.' , "Combination")
 
 
 #-------------------------- Atomic Utilities
 
 ### Point estimate performance
-pmetrix <- function(simout, estnames = pointnames, bigerr = 0.95, ...) 
+pmetrix <- function(simout, estnames = pointnames, combine = TRUE, bigerr = 0.95, ...) 
 {
-	require(data.table)
-	calcnames = intersect(estnames, names(simout) )
+require(data.table)
+simdat = copy(simout)
 
-simout[ ,apply(.SD, 2, trio, ref=true, p=bigerr), .SDcol = calcnames ]
+# combining CIR and dynamean
+if(combine) simdat[ , dual := ifelse(is.na(cir), dyna, (cir+dyna)/2 ) ]
+
+calcnames = intersect(estnames, names(simdat) )
+
+simdat[ ,apply(.SD, 2, trio, ref=true, p=bigerr), .SDcol = calcnames ]
 }
 
 ### Interval performance (coverage and width)
 
-imetrix <- function(simout, ...)
+imetrix <- function(simout, combine = TRUE,  ...)
 {
-	require(data.table)
-	simdat = copy(simout)
+require(data.table)
+simdat = copy(simout)
+
+# combining CIR and dynamean
+if(combine)
+{
+	simdat[ , duall := ifelse(is.na(cirl), dynal, (cirl+dynal)/2 ) ]
+	simdat[ , dualu := ifelse(is.na(ciru), dynau, (ciru+dynau)/2 ) ]
+} 
 	
 dout = simdat[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
 	rev1 = mean(rev1l<=true & rev1u>=true, na.rm=TRUE),
 	dyna = mean(dynal<=true & dynau>=true, na.rm=TRUE),
 	cir = mean(cirl<=true & ciru>=true, na.rm=TRUE),
+	dual = ifelse(combine, mean(duall<=true & dualu>=true, na.rm=TRUE), NA),
 	ir = mean(irl<=true & iru>=true, na.rm=TRUE),
 	cirboot = mean(cbootl<=true & cbootu>=true, na.rm=TRUE)
 	) ]
@@ -53,6 +66,7 @@ rbind(dout, simdat[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
 	rev1 = mean(rev1u - rev1l, na.rm=TRUE),
 	dyna = mean(dynau - dynal, na.rm=TRUE),
 	cir = mean(ciru[cirfin] - cirl[cirfin]),
+	dual = ifelse(combine, mean(dualu - duall, na.rm=TRUE), NA),
 	ir = mean(iru[irfin] - irl[irfin]),
 	cfinite = mean(cirfin) 
 #	liao = ifelse(addLiao, mean(liaou - liaol, na.rm=TRUE), NA),
@@ -97,8 +111,8 @@ combo <- function(simlist, atomfun = pmetrix, ...)
 #--------------------------  Plotting
 
 sideside <- function(omnibus, metric = 'RMSE', fsize = 15, jwid = 0.1, yref = NULL,
-			zoom = c(0, NA), expansion = c(0, 0.01), psize = 3,
-			innames = pointnames, outnames = pointnice, colvar = FALSE,
+			zoom = c(0, NA), expansion = c(0, 0.01), psize = 3, rotlab = TRUE,
+			innames = pointnames, outnames = pointnice, desvar = FALSE,
 			colkey = c('grey65', 'black'), titl = '' )
 {
 require(plyr)
@@ -115,11 +129,13 @@ pout = ggplot(pdat, aes(Estimate, Value))  +
 
 if(!is.null(yref)) pout = pout + geom_hline(yintercept = yref)
 
-if(colvar) {
+if(desvar) {
 	pout = pout + geom_jitter(width = jwid, size=psize, 
 						aes(Estimate, Value, color = Design) ) + 
 						scale_color_manual(values = colkey) } else {
 		pout =	pout + geom_jitter(width = jwid, size=psize) }
+		
+if(rotlab) pout = pout + theme(axis.text.x = element_text(angle = 45, hjust=1) )
 
 pout
 }

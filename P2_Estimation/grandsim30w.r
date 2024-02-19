@@ -61,6 +61,8 @@ kw30minhi = dfsim(n, starting = 1, Fvals=weib30Fu, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30w)					
 estkw30minhi = estbatch(kw30minhi, truth=weib30parm$t30[1:nsim]+2, target=.3, 
 					bpt=ktarg30, desfun=krow, desargs=k30list)
+# estkw30minhi_2 = estbatch(kw30minhi, truth=weib30parm$t30[1:nsim]+2, target=.3, 
+	#				bpt=ktarg30, desfun=krow, desargs=k30list, randboot = FALSE)
 
 kw30minlo = dfsim(n, starting = 1, Fvals=weib30Fl, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30w)					

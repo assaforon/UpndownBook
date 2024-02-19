@@ -43,7 +43,7 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 ### Parallelized for Windows environment via 'foreach'
 
 estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 6,
-            B = 250, randboot = TRUE, cirb = TRUE, desfun=krow, desargs=list(k=1), 
+            B = 250, randboot = FALSE, cirb = TRUE, desfun=krow, desargs=list(k=1), 
 			doseset = NULL, conf = 0.9, bigerr = 0.9, addLiao = FALSE)
 
 {
