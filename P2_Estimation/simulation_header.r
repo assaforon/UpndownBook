@@ -2,7 +2,7 @@
 library(cir)
 library(upndown)
 library(data.table)
-setDTthreads(4)
+setDTthreads(3)
 
 ####----------------------- Constants and quick Utilities
 
@@ -22,8 +22,11 @@ qae = function(x,ref,na.rm=TRUE, p = 0.9)
 }
 # Combos galore!
 duo = function(x,ref,na.rm=TRUE) c(rmse=rmse(x,ref), bias=bias(x,ref) )
-trio = function(x,ref,na.rm=TRUE, p=0.9) c(rmse=rmse(x,ref), bias=bias(x,ref), 
-		QAE = qae(x,ref, p=p) )
+trio = function(x,ref,na.rm=TRUE, p=0.9) {
+	tmp=c(rmse=rmse(x,ref), bias=bias(x,ref), QAE = qae(x,ref, p=p) )
+	names(tmp) = c('RMSE', 'Bias', paste('QAE', round(p*100), sep='') )
+	tmp
+}
 
 ####----------------------- Functions to generate the dose-response scenarios
 
