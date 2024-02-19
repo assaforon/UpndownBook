@@ -62,7 +62,7 @@ rbind(dout, simdat[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
 
 ### Stackem up!
 
-stackem <- function(metr, outnames = NULL, framework, ...)
+stackem <- function(metr, outnames = NULL, framework, finites = TRUE, ...)
 {
 	require(data.table)
 	if(!is.null(outnames)) rownames(metr) = outnames
@@ -71,7 +71,7 @@ stackem <- function(metr, outnames = NULL, framework, ...)
 	tmp[ , Metric := rownames(metr) ]
 	
 	dout = melt(tmp, id.var = 'Metric', variable.name = 'estimate', 
-			value.name = 'Value', na.rm = TRUE, variable.factor = FALSE)
+			value.name = 'Value', na.rm = finites, variable.factor = FALSE)
 	dout[ , Framework := framework ]
 	dout
 }
