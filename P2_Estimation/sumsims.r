@@ -111,8 +111,8 @@ combo <- function(simlist, atomfun = pmetrix, ...)
 #--------------------------  Plotting
 
 sideside <- function(omnibus, metric = 'RMSE', fsize = 15, jwid = 0.1, yref = NULL,
-			zoom = c(0, NA), expansion = c(0, 0.01), psize = 3, rotlab = TRUE,
-			innames = pointnames, outnames = pointnice, desvar = FALSE,
+			zoom = c(0, NA), expansion = c(0, 0.02), psize = 3, rotlab = TRUE,
+			innames = pointnames, outnames = pointnice, desvar = TRUE, multip = 1,
 			colkey = c('grey65', 'black'), titl = '' )
 {
 require(plyr)
@@ -123,7 +123,7 @@ theme_set(theme_bw(fsize))
 pdat = omnibus[Metric == metric & estimate %in% innames, ]
 pdat[ , Estimate := mapvalues(estimate, innames, outnames) ]
 
-pout = ggplot(pdat, aes(Estimate, Value))  +
+pout = ggplot(pdat, aes(Estimate, multip*Value))  +
                 scale_y_continuous(expand = expansion, limits = zoom )	+ 
 				labs(y = metric, x='', title = titl)
 
@@ -131,7 +131,7 @@ if(!is.null(yref)) pout = pout + geom_hline(yintercept = yref)
 
 if(desvar) {
 	pout = pout + geom_jitter(width = jwid, size=psize, 
-						aes(Estimate, Value, color = Design) ) + 
+						aes(Estimate, multip*Value, color = Design) ) + 
 						scale_color_manual(values = colkey) } else {
 		pout =	pout + geom_jitter(width = jwid, size=psize) }
 		
