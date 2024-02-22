@@ -6,6 +6,8 @@ outdir = '../../output'
 
 load(file.path(outdir, 'grandsim30w.RData'))	
 e30w = ls(pat='est[bk]w')
+load(file.path(outdir, 'grandsim30l.RData'))	
+e30l = ls(pat='est[bk]l3')
 
 load(file.path(outdir, 'grandsim90w.RData'))	
 e90w = ls(pat='est[bk]w9')
@@ -37,6 +39,11 @@ p30wstack[ , Design := factor(substr(Framework, 1, 1), labels = desnames) ]
 i30wstack = combo(e30w, atomfun = imetrix, outnames = inames)
 i30wstack[ , Design := factor(substr(Framework, 1, 1), labels = desnames) ]
 
+p30lstack = combo(e30l, finites = FALSE)
+p30lstack[ , Design := factor(substr(Framework, 1, 1), labels = desnames) ]
+i30lstack = combo(e30l, atomfun = imetrix, outnames = inames)
+i30lstack[ , Design := factor(substr(Framework, 1, 1), labels = desnames) ]
+
 p50stack = combo(e50, finites = FALSE)
 p50stack[ , Design := factor(substr(Framework, 1, 1), 
 			labels = c('Logistic', 'Weibull') )  ]
@@ -64,6 +71,13 @@ int30wc = sideside(i30wstack, metric = 'Coverage', titl = 'Coverage, 30th Percen
 int30wc = int30wc + geom_hline(yintercept = c(85,95), lty=3)
 int30ww = sideside(i30wstack, metric = 'Width', titl = 'CI Width, 30th Percentile, Weibull Curves')
 
+point30lr = sideside(p30lstack, titl = 'RMSEs, 30th Percentile, Logistic Curves')
+point30lb = sideside(p30lstack, metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0, titl = 'Bias, 30th Percentile, Logistic Curves')
+
+int30lc = sideside(i30lstack, metric = 'Coverage', titl = 'Coverage, 30th Percentile, Logistic Curves', zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100)
+int30lc = int30lc + geom_hline(yintercept = c(85,95), lty=3)
+int30lw = sideside(i30lstack, metric = 'Width', titl = 'CI Width, 30th Percentile, Logistic Curves')
+
 point50r = sideside(p50stack, titl = 'RMSEs, 50th Percentile')
 point50r = point50r + labs(color='Family')
 point50b = sideside(p50stack, metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0, titl = 'Bias, 50th Percentile')
@@ -75,6 +89,7 @@ int50w = sideside(i50stack, metric = 'Width', titl = 'CI Width, 50th Percentile'
 int50w = int50w + labs(color='Family')
 
 
+save.image(file.path(outdir, 'plotting.RData') )
 
 cat(base::date(), '\n')
 

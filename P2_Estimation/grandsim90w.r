@@ -81,17 +81,18 @@ kw90lomid_slow = dfsim(60, starting = lostart, Fvals=weib90F, ensemble=nsim,
 estkw90lomid_slow = estbatch(kw90lomid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
 					bpt=ktarg90, desfun=krow, desargs=k90list)
 
+### Commented out after initial checking
 # Playing with k
-kw90minhi5 = dfsim(60, starting = 1, Fvals=weib90Fu, ensemble=nsim,
-						desArgs=list(k=5, lowTarget=FALSE, fastStart=TRUE), 
-						thresholds = thresh90w)					
-estkw90minhi5 = estbatch(kw90minhi5, truth=weib90parm$t90[1:nsim]+3, target=.9, 
-					bpt=k2targ(5), desfun=krow, desargs=k90list)
-kw90minhi7 = dfsim(60, starting = 1, Fvals=weib90Fu, ensemble=nsim,
-						desArgs=list(k=7, lowTarget=FALSE, fastStart=TRUE), 
-						thresholds = thresh90w)					
-estkw90minhi7 = estbatch(kw90minhi7, truth=weib90parm$t90[1:nsim]+3, target=.9, 
-					bpt=k2targ(7), desfun=krow, desargs=k90list)
+# kw90minhi5 = dfsim(60, starting = 1, Fvals=weib90Fu, ensemble=nsim,
+						# desArgs=list(k=5, lowTarget=FALSE, fastStart=TRUE), 
+						# thresholds = thresh90w)					
+# estkw90minhi5 = estbatch(kw90minhi5, truth=weib90parm$t90[1:nsim]+3, target=.9, 
+					# bpt=k2targ(5), desfun=krow, desargs=k90list)
+# kw90minhi7 = dfsim(60, starting = 1, Fvals=weib90Fu, ensemble=nsim,
+						# desArgs=list(k=7, lowTarget=FALSE, fastStart=TRUE), 
+						# thresholds = thresh90w)					
+# estkw90minhi7 = estbatch(kw90minhi7, truth=weib90parm$t90[1:nsim]+3, target=.9, 
+					# bpt=k2targ(7), desfun=krow, desargs=k90list)
 
 cat('k variants\n')						
 ########### BCD standard	

@@ -18,7 +18,7 @@ weib30parm = fread(file.path(outdir, 'scenarios_weib30.csv') )
 set.seed(7928)
 nsim = 500 # This overrides 'nsim' in the scenario-generation scripts
 M = 8
-n = 50
+n = 60
 ktarg30 = k2targ(2, lowTarget=TRUE)
 k30list = list(k=2, lowTarget=TRUE, fastStart=FALSE)
 b30list = list(coin=3/7, lowTarget=TRUE, fastStart=FALSE)
