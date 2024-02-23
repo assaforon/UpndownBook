@@ -8,6 +8,7 @@ load(file.path(outdir, 'grandsim30w.RData'))
 load(file.path(outdir, 'grandsim30w_gud.RData'))	
 e30w = c(ls(pat='est[bk]w'), ls(pat='estg[23]w') )
 load(file.path(outdir, 'grandsim30l.RData'))	
+load(file.path(outdir, 'grandsim30l_gud.RData'))	
 e30l = c(ls(pat='est[bk]l3'), ls(pat='estg[23]l3') )
 
 load(file.path(outdir, 'grandsim90w.RData'))	
@@ -48,7 +49,8 @@ p30lstack = combo(e30l, finites = FALSE)
 p30lstack[ , Design := factor(substr(Framework, 1, 2), 
 				labels = c('BCD', 'Group (2)', 'Group (3)', "K-row") ) ]
 i30lstack = combo(e30l, atomfun = imetrix, outnames = inames)
-i30lstack[ , Design := factor(substr(Framework, 1, 1), labels = desnames) ]
+i30lstack[ , Design := factor(substr(Framework, 1, 2), 
+				labels = c('BCD', 'Group (2)', 'Group (3)', "K-row") ) ]
 
 p50stack = combo(e50, finites = FALSE)
 p50stack[ , Design := factor(substr(Framework, 1, 1), 
@@ -77,12 +79,12 @@ int30wc = sideside(i30wstack, metric = 'Coverage', titl = 'Coverage, 30th Percen
 int30wc = int30wc + geom_hline(yintercept = c(85,95), lty=3)
 int30ww = sideside(i30wstack, metric = 'Width', titl = 'CI Width, 30th Percentile, Weibull Curves', colkey=colors4)
 
-point30lr = sideside(p30lstack, titl = 'RMSEs, 30th Percentile, Logistic Curves')
-point30lb = sideside(p30lstack, metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0, titl = 'Bias, 30th Percentile, Logistic Curves')
+point30lr = sideside(p30lstack, titl = 'RMSEs, 30th Percentile, Logistic Curves', colkey=colors4)
+point30lb = sideside(p30lstack, metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0, titl = 'Bias, 30th Percentile, Logistic Curves', colkey=colors4)
 
-int30lc = sideside(i30lstack, metric = 'Coverage', titl = 'Coverage, 30th Percentile, Logistic Curves', zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100)
+int30lc = sideside(i30lstack, metric = 'Coverage', titl = 'Coverage, 30th Percentile, Logistic Curves', zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100, colkey=colors4)
 int30lc = int30lc + geom_hline(yintercept = c(85,95), lty=3)
-int30lw = sideside(i30lstack, metric = 'Width', titl = 'CI Width, 30th Percentile, Logistic Curves')
+int30lw = sideside(i30lstack, metric = 'Width', titl = 'CI Width, 30th Percentile, Logistic Curves', colkey=colors4)
 
 point50r = sideside(p50stack, titl = 'RMSEs, 50th Percentile')
 point50r = point50r + labs(color='Family')
