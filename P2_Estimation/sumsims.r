@@ -9,13 +9,12 @@ source('simulation_header.r')
 
 ### Constants
 
-pointnames = c("dm48", "all1", "all3", "rev1", "dyna", "cir", "ir", "dual")
-pointnice = c('Dixon-Mood', paste('Avg. from' ,c('R1','R3') ), 'Revs. (Wetherill)', 
+pointnames = c("dm48", "rev1", "all1", "all3", "dyna", "cir", "ir", "dual")
+pointnice = c('Dixon-Mood', 'Revs. (Wetherill)', paste('Avg. from' ,c('R1','R3') ),  
 			'Dynamic Avg.', 'CIR', 'IR', "Combination" )
 
-intnames = c("cir", "ir", "dyna", "all3", "rev1", "cirboot", 'dual')
-intnice = c('CIR', 'IR', 'Dynamic Avg.', 'Avg. from R3', 
-			'Revs. (Wetherill)', 'CIR Boot.' , "Combination")
+intnames = c("rev1", "all3", "dyna", "cir", "ir", 'dual', "cirboot")
+intnice = c('Revs. (Wetherill)', 'Avg. from R3', 'Dynamic Avg.', 'CIR', 'IR' ,   "Combination", 'CIR Boot.')
 
 
 #-------------------------- Atomic Utilities
@@ -113,21 +112,27 @@ combo <- function(simlist, atomfun = pmetrix, ...)
 sideside <- function(omnibus, metric = 'RMSE', fsize = 15, jwid = 0.1, yref = NULL,
 			zoom = c(0, NA), expansion = c(0, 0.02), psize = 3, rotlab = TRUE,
 			innames = pointnames, outnames = pointnice, desvar = TRUE, multip = 1,
-			colkey = c('grey65', 'black'), titl = '' )
+			colkey = c('grey65', 'black'), titl = '', addmean = TRUE)
 {
 require(plyr)
+require(forcats)
 require(data.table)
 require(ggplot2)
 theme_set(theme_bw(fsize))
 
 pdat = omnibus[Metric == metric & estimate %in% innames, ]
-pdat[ , Estimate := mapvalues(estimate, innames, outnames) ]
+pdat[ , Estimate := fct_relevel(mapvalues(estimate, innames, outnames, 
+						warn_missing = FALSE), outnames) ]
+						
+if(addmean) pmeans = pdat[, list(Value = mean(multip*Value)), keyby = 'Estimate' ]
 
 pout = ggplot(pdat, aes(Estimate, multip*Value))  +
                 scale_y_continuous(expand = expansion, limits = zoom )	+ 
 				labs(y = metric, x='', title = titl)
 
 if(!is.null(yref)) pout = pout + geom_hline(yintercept = yref)
+
+if(addmean) pout = pout + geom_point(data=pmeans, aes(Estimate, Value), pch='-', size = psize*8 )
 
 if(desvar) {
 	pout = pout + geom_jitter(width = jwid, size=psize, 

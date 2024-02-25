@@ -12,19 +12,27 @@ outdir = '../../output'
 #### Simple performance metrics, with some twists
 
 rmse = function(x,ref,na.rm=TRUE) sqrt(mean((x-ref)^2,na.rm=na.rm))
+# Trimmed RMSE!
+trmse = function(x, ref, na.rm=TRUE, p = 0.95) 
+{
+ n = length(x)
+ tmp = sort( (x-ref)^2, na.last = TRUE)
+ mean(tmp[1:round(n*p)], na.rm = na.rm) 
+}
+
 bias = function(x,ref,na.rm=TRUE) mean(x-ref,na.rm=na.rm)
-# Quantile of absolute error (now including missing values)
-qae = function(x,ref,na.rm=TRUE, p = 0.9) 
+# Trimmed mean absolute error 
+mae = function(x,ref,na.rm=TRUE, p = 0.95) 
 {
 	n = length(x)
-	tmp = sort( abs(x-ref) )
-	tmp[round(n*p)]
+	tmp = sort( abs(x-ref) , na.last = TRUE)
+ mean(tmp[1:round(n*p)], na.rm = na.rm) 
 }
 # Combos galore!
 duo = function(x,ref,na.rm=TRUE) c(rmse=rmse(x,ref), bias=bias(x,ref) )
-trio = function(x,ref,na.rm=TRUE, p=0.9) {
-	tmp=c(rmse=rmse(x,ref), bias=bias(x,ref), QAE = qae(x,ref, p=p) )
-	names(tmp) = c('RMSE', 'Bias', paste('QAE', round(p*100), sep='') )
+trio = function(x,ref,na.rm=TRUE, p=0.95) {
+	tmp=c(rmse=rmse(x,ref), bias=bias(x,ref), mae = mae(x,ref, p=p) )
+	names(tmp) = c('RMSE', 'Bias', paste('MAE', round(p*100), sep='') )
 	tmp
 }
 
