@@ -53,12 +53,13 @@ dout = simdat[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
 	cir = mean(cirl<=true & ciru>=true, na.rm=TRUE),
 	dual = ifelse(combine, mean(duall<=true & dualu>=true, na.rm=TRUE), NA),
 	ir = mean(irl<=true & iru>=true, na.rm=TRUE),
-	cirboot = mean(cbootl<=true & cbootu>=true, na.rm=TRUE)
-	) ]
+	cirboot = ifelse(exists('cbootl'), mean(cbootl<=true & cbootu>=true, na.rm=TRUE), NA) )
+	 ]
 
 	simdat[ , cirfin := (is.finite(ciru) & is.finite(cirl) ) ]
 	simdat[ , irfin :=  (is.finite(iru) & is.finite(irl) ) ]
-	simdat[ , cbfin :=  (is.finite(cbootu) & is.finite(cbootl) ) ]
+	simdat[ , cbfin :=  ifelse(exists('cbootl'), 
+						(is.finite(cbootu) & is.finite(cbootl) ), NA) ]
 
 
 rbind(dout, simdat[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
