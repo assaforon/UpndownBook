@@ -20,7 +20,7 @@ intnice = c('Revs. (Wetherill)', 'Avg. from R3', 'Dynamic Avg.', 'CIR', 'IR' ,  
 #-------------------------- Atomic Utilities
 
 ### Point estimate performance
-pmetrix <- function(simout, estnames = pointnames, combine = TRUE, bigerr = 0.95, ...) 
+pmetrix <- function(simout, estnames = pointnames, combine = TRUE, bigerr = 0.9, ...) 
 {
 require(data.table)
 simdat = copy(simout)

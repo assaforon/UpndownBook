@@ -22,7 +22,7 @@ trmse = function(x, ref, na.rm=TRUE, p = 0.95)
 
 bias = function(x,ref,na.rm=TRUE) mean(x-ref,na.rm=na.rm)
 # Trimmed mean absolute error 
-mae = function(x,ref,na.rm=TRUE, p = 0.95) 
+mae = function(x,ref,na.rm=TRUE, p = 0.9) 
 {
 	n = length(x)
 	tmp = sort( abs(x-ref) , na.last = TRUE)
