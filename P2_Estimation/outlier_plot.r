@@ -6,7 +6,7 @@ outdir = '../../output'
 
 load(file.path(outdir, 'grandsim50l.RData'))	
 
-pdf(file.path(outdir, 'outlier_plot.pdf'), width = 11, height = 6)
+pdf(file.path(outdir, 'outlier_plot.pdf'), width = 9, height = 5)
 xtit = 'Simulation Run (reordered by error size)'
 ytit = 'Square Estimation Error'
 ymax = estl50lomid[ , max((cir-true)^2, na.rm = TRUE) ]
