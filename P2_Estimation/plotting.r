@@ -118,7 +118,7 @@ point50r = sideside(p50stack, titl = 'RMSEs, 50th Percentile')
 point50r = point50r + labs(color='Family')
 point50b = sideside(p50stack, metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0, titl = 'Bias, 50th Percentile')
 point50b = point50b + labs(color='Family')
-point50q = sideside(p50stack, metric = 'MAE90', titl = 'MAE90, 50th Percentile, Logistic Curves') 
+point50q = sideside(p50stack, metric = 'MAE90', titl = 'MAE90, 50th Percentile') 
 point50q = point50q + labs(color='Family')
 
 

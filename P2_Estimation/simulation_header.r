@@ -11,27 +11,26 @@ outdir = '../../output'
 
 #### Simple performance metrics, with some twists
 
-rmse = function(x,ref,na.rm=TRUE) sqrt(mean((x-ref)^2,na.rm=na.rm))
-# Trimmed RMSE!
-trmse = function(x, ref, na.rm=TRUE, p = 0.95) 
+rmse = function(x,ref,na.rm = TRUE, winsor = FALSE) 
 {
- n = length(x)
- tmp = sort( (x-ref)^2, na.last = TRUE)
- mean(tmp[1:round(n*p)], na.rm = na.rm) 
+	tmp = (x-ref)^2
+	if(winsor) tmp[is.na(tmp)] = max(tmp, na.rm = TRUE)
+	sqrt(mean(tmp, na.rm=na.rm))
 }
 
 bias = function(x,ref,na.rm=TRUE) mean(x-ref,na.rm=na.rm)
 # Trimmed mean absolute error 
-mae = function(x,ref,na.rm=TRUE, p = 0.9) 
+mae = function(x,ref,na.rm=TRUE, p = 0.9, winsor = TRUE) 
 {
 	n = length(x)
 	tmp = sort( abs(x-ref) , na.last = TRUE)
+	if(winsor) tmp[is.na(tmp)] = max(tmp, na.rm = TRUE)
  mean(tmp[1:round(n*p)], na.rm = na.rm) 
 }
 # Combos galore!
 duo = function(x,ref,na.rm=TRUE) c(rmse=rmse(x,ref), bias=bias(x,ref) )
-trio = function(x,ref,na.rm=TRUE, p=0.95) {
-	tmp=c(rmse=rmse(x,ref), bias=bias(x,ref), mae = mae(x,ref, p=p) )
+trio = function(x,ref,na.rm=TRUE, p=0.9, ...) {
+	tmp=c(rmse=rmse(x,ref, ...), bias=bias(x,ref), mae = mae(x,ref, p=p, ...) )
 	names(tmp) = c('RMSE', 'Bias', paste('MAE', round(p*100), sep='') )
 	tmp
 }
@@ -50,7 +49,7 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 
 ### Parallelized for Windows environment via 'foreach'
 
-estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 6,
+estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 3,
             B = 250, randboot = TRUE, cirb = FALSE, desfun=krow, desargs=list(k=1), 
 			doseset = NULL, conf = 0.9, bigerr = 0.9, addLiao = FALSE)
 
