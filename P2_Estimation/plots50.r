@@ -10,7 +10,7 @@ hgt = 7
 load(file.path(outdir, 'plotting.RData'))	
 
 library(ggplot2)
-theme_set(theme_bw(16))
+theme_set(theme_bw(18))
 
 ggsave(point50r + labs(y = "RMSE (spacing units)", title = ''),
 			file = file.path(outdir, 'sim_rmse50.pdf'), width=wid, height=hgt)

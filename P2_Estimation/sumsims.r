@@ -111,7 +111,7 @@ combo <- function(simlist, atomfun = pmetrix, ...)
 #--------------------------  Plotting
 
 sideside <- function(omnibus, metric = 'RMSE', fsize = 15, jwid = 0.1, yref = NULL,
-			zoom = c(0, NA), expansion = c(0, 0.02), psize = 3, rotlab = TRUE,
+			zoom = c(0, NA), expansion = c(0, 0.02), psize = 4, rotlab = TRUE,
 			innames = pointnames, outnames = pointnice, desvar = TRUE, multip = 1,
 			colkey = c('grey65', 'black'), titl = '', addmean = TRUE)
 {
