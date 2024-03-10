@@ -2,7 +2,7 @@
 library(cir)
 library(upndown)
 library(data.table)
-setDTthreads(3)
+setDTthreads(2)
 
 ####----------------------- Constants and quick Utilities
 
@@ -49,8 +49,9 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 
 ### Parallelized for Windows environment via 'foreach'
 
-estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 3,
-            B = 250, randboot = TRUE, cirb = FALSE, desfun=krow, desargs=list(k=1), 
+estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 3, 
+			n = NULL, nsim = NULL,  B = 250, randboot = TRUE, 
+			cirb = FALSE, desfun=krow, desargs=list(k=1), 
 			doseset = NULL, conf = 0.9, bigerr = 0.9, addLiao = FALSE)
 
 {
@@ -65,8 +66,8 @@ cl <- makeCluster(cores, type = "SOCK")
 registerDoParallel(cl)
 
 sizes=dim(simdat$response)
-n=sizes[1]
-nsim=sizes[2]
+if(is.null(n)) n=sizes[1]
+if(is.null(nsim)) nsim=sizes[2]
 M = dim(simdat$scenarios)[1]
 if(is.null(doseset)) doseset = 1:M
 if(length(doseset) != M) stop('Mistmatch in length of dose set.\n')
@@ -75,6 +76,7 @@ ctail = (1 - conf) / 2
 
 # If all identical and truth is a scalar:
 if(length(truth) == 1) truth = rep(truth, nsim)
+truth = truth[1:nsim]
 if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 
 
@@ -83,7 +85,7 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 ### First, generating the bootstrap sample for all CI estimation
 #      (and we get dynamean() bootstrap CI's "for free")
 	eout = data.frame(true = truth[a])
-	boots = dfboot(simdat$doses[1:n, a], simdat$responses[ ,a], B=B, doses = doseset,
+	boots = dfboot(simdat$doses[1:n, a], simdat$responses[1:n,a], B=B, doses = doseset,
 				design = desfun, desArgs = desargs, showdots = FALSE,
 				target = target, balancePt = bpt, full = TRUE, randstart = randboot)
 #				return(boots)
@@ -92,17 +94,17 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
     if(any(doseset != 1:M)) bootdoses = suppressMessages(plyr::mapvalues(boots$x, 1:M, doseset) ) else bootdoses = boots$x
 
 ### Averaging estimators
-	eout$dm48 = dixonmood(simdat$dose[1:n, a], simdat$response[ ,a])
-	eout$all1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, conf = NULL)
-	eout$all3 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=3, conf = NULL)
+	eout$dm48 = dixonmood(simdat$doses[1:n, a], simdat$response[1:n,a])
+	eout$all1 = reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=1, conf = NULL)
+	eout$all3 = reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=3, conf = NULL)
 # Wetherill's estimator
-	eout$rev1 = reversmean(simdat$dose[,a],simdat$response[,a],rstart=1, all=FALSE, conf = NULL)
-	eout$dyna = dynamean(simdat$dose[,a], maxExclude = 1/2, conf = NULL)
+	eout$rev1 = reversmean(simdat$doses[1:n,a],simdat$response[1:n,a],rstart=1, all=FALSE, conf = NULL)
+	eout$dyna = dynamean(simdat$doses[1:(n+1),a], maxExclude = 1/2, conf = NULL)
 
 ### isotonics
-	tmp1 = try(udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
+	tmp1 = try(udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
 	balancePt = bpt, conf = conf) )
-	tmp2 = try(udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
+	tmp2 = try(udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
 	balancePt = bpt, conf = conf, estfun = oldPAVA) )
 	eout$cir = ifelse(is.finite(tmp1$point), tmp1$point, NA)
 	eout$ir = ifelse(is.finite(tmp2$point),tmp2$point, NA)
@@ -116,7 +118,7 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 	eout$iru = ifelse(is.finite(tmp2$point), unlist(tmp2[4]), NA)
 	if(addLiao)
 	{
-		tmp3 = udest(simdat$dose[1:n, a], simdat$response[ ,a], target=target, 
+		tmp3 = udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
 				balancePt = bpt, conf = conf, intfun = liaoCI)
 		eout$liaol = unlist(tmp3[3])
 		eout$laiuu = unlist(tmp4[4])

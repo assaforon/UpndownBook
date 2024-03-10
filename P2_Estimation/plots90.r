@@ -32,6 +32,10 @@ i90stack = combo(e90w, atomfun = imetrix, outnames = inames)
 i90stack[ , Design := factor(substr(Framework, 1, 1), labels = desnames) ]
 
 p90stack[ , baseframe := gsub('[_]slow', '', Framework) ]
+
+
+#### Creating a regular vs. quick-start dataset
+
 p90mash = merge(p90stack[Metric == 'MAE90' & estimate=='cir' & !grepl('slow', Framework)],
 				p90stack[Metric == 'MAE90' & estimate=='cir' & grepl('slow', Framework)],
 					all = FALSE, by = c('Design', 'Metric', 'baseframe') )
@@ -65,27 +69,41 @@ rspace = theme(plot.margin = unit(c(0,30,0,0), "pt"))
 	
 ### Arranging and saving; the syntax is from the "patchwork" package
 
-ggsave(p1+rspace+p2+rspace, file = file.path(outdir, 'sim_quickstart.pdf'),
-				width = 13, height=7)
+### Commenting out b/c it's already exported and uploaded; uncomment to re-run
+
+#ggsave(p1+rspace+p2+rspace, file = file.path(outdir, 'sim_quickstart.pdf'),
+#				width = 13, height=7)
 
 
+#---------------------- "Standard" Plots
 
-	stop('a')
+p90stack = p90stack[!grepl('slow', Framework) ]
+i90stack = i90stack[!grepl('slow', Framework) ]
+
+
+point90r = sideside(p90stack, titl = '')
+point90rzoom = sideside(p90stack[estimate != 'dm48', ], titl = '') 
+
+ggsave(point90r, file = file.path(outdir, 'sim_rmse90.pdf'),
+			 width = wid, height = hgt) 
+ggsave(point90rzoom, file = file.path(outdir, 'sim_rmse90zoom.pdf'),
+			 width = wid, height = hgt) 
+
+point90bzoom = sideside(p90stack[estimate != 'dm48', ], metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0, titl = '')
+
+ggsave(point90bzoom, file = file.path(outdir, 'sim_bias90zoom.pdf'),
+			 width = wid, height = hgt) 
+
+int90c = sideside(i90stack, metric = 'Coverage', titl = '', zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100)
+int90c = int90c + geom_hline(yintercept = c(85,95), lty=3)
+int90w = sideside(i90stack, metric = 'Width', titl = '')
 	
-	ggplot(p90mash, aes(Value.y, Value.x, color = Design)) + geom_point(size=5) +
-			geom_abline(intercept=0, slope=1) + xlim(0.03,y1max) +  ylim(0.03,y1max) +
-			scale_color_manual (values = colors4[c(1,4)]) + 
-			labs(x='MAE90, Naive Design', y='MAE90, with Quick-Start')
-
-	y2range = 100 * range(c(i90mash$Value.x, i90mash$Value.y))				
-
-	p2 <- ggplot(i90mash, aes(100*Value.y, 100*Value.x, color = Design)) + 
-		geom_point(size=3) + geom_vline(xintercept=90) +
-			geom_hline(yintercept=90) + xlim(y2range) + ylim(y2range) +
-			scale_color_manual (values = colors4[c(1,4)]) + 
-			labs(x='CI Coverage, Naive Design', y='CI Coverage, with Quick-Start', color = NULL)
-			
-			
+ggsave(int90c, file = file.path(outdir, 'sim_cover90.pdf'),
+			 width = wid, height = hgt) 
+ggsave(int90w, file = file.path(outdir, 'sim_width90.pdf'),
+			 width = wid, height = hgt) 
+	
+cat(base::date(), '\n')
 					
 					
 
