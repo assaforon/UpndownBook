@@ -69,8 +69,8 @@ sizes=dim(simdat$response)
 if(is.null(n)) n=sizes[1]
 if(is.null(nsim)) nsim=sizes[2]
 M = dim(simdat$scenarios)[1]
-if(is.null(doseset)) doseset = 1:M
-if(length(doseset) != M) stop('Mistmatch in length of dose set.\n')
+if(is.null(doseset)) doseset = (-1):(M+2)
+# if(length(doseset) != M) stop('Mistmatch in length of dose set.\n')
 # interval tails
 ctail = (1 - conf) / 2
 
@@ -80,18 +80,22 @@ truth = truth[1:nsim]
 if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 
 
-ests <- foreach(a = 1:nsim, .combine = 'rbind', 
+ests0 <- foreach(a = 1:nsim,  
 			.packages = c('cir','upndown','plyr') ) %dopar%  {
+	eout = data.frame(true = truth[a])
+	if(var(simdat$doses[1:n, a]) == 0) return(eout) # a dud run
+
 ### First, generating the bootstrap sample for all CI estimation
 #      (and we get dynamean() bootstrap CI's "for free")
-	eout = data.frame(true = truth[a])
-	boots = dfboot(simdat$doses[1:n, a], simdat$responses[1:n,a], B=B, doses = doseset,
+	
+	boots = dfboot(simdat$doses[1:n, a], simdat$responses[1:n,a], B=B, doses = NULL,
 				design = desfun, desArgs = desargs, showdots = FALSE,
 				target = target, balancePt = bpt, full = TRUE, randstart = randboot)
 #				return(boots)
 
 # "Dressing up" the dose levels (which are 1:m in the progress loop above) with real values
-    if(any(doseset != 1:M)) bootdoses = suppressMessages(plyr::mapvalues(boots$x, 1:M, doseset) ) else bootdoses = boots$x
+#    if(any(doseset != 1:M)) bootdoses = suppressMessages(plyr::mapvalues(boots$x, 1:M, # doseset) ) else 
+bootdoses = boots$x
 
 ### Averaging estimators
 	eout$dm48 = dixonmood(simdat$doses[1:n, a], simdat$response[1:n,a])
@@ -106,16 +110,16 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 	balancePt = bpt, conf = conf) )
 	tmp2 = try(udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
 	balancePt = bpt, conf = conf, estfun = oldPAVA) )
-	eout$cir = ifelse(is.finite(tmp1$point), tmp1$point, NA)
-	eout$ir = ifelse(is.finite(tmp2$point),tmp2$point, NA)
+	eout$cir = ifelse( 'data.frame' %in% class(tmp1), tmp1$point, NA)
+	eout$ir = ifelse( 'data.frame' %in% class(tmp2),tmp2$point, NA)
 
 #### CIs
 
 # Isotonic is simplest:
-	eout$cirl = ifelse(is.finite(tmp1$point), unlist(tmp1[3]), NA)
-	eout$ciru = ifelse(is.finite(tmp1$point), unlist(tmp1[4]), NA)
-	eout$irl = ifelse(is.finite(tmp2$point), unlist(tmp2[3]), NA)
-	eout$iru = ifelse(is.finite(tmp2$point), unlist(tmp2[4]), NA)
+	eout$cirl = ifelse( 'data.frame' %in% class(tmp1), unlist(tmp1[3]), NA)
+	eout$ciru = ifelse( 'data.frame' %in% class(tmp1), unlist(tmp1[4]), NA)
+	eout$irl = ifelse( 'data.frame' %in% class(tmp2), unlist(tmp2[3]), NA)
+	eout$iru = ifelse( 'data.frame' %in% class(tmp2), unlist(tmp2[4]), NA)
 	if(addLiao)
 	{
 		tmp3 = udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
@@ -165,7 +169,8 @@ ests <- foreach(a = 1:nsim, .combine = 'rbind',
 stopCluster(cl)
 cat(base::date(), '\n')
 
-setDT(ests)
+ests = rbindlist(ests0, fill = TRUE)
+# setDT(ests)
 
 ##### returning everything raw - now it's the default:
 

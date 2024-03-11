@@ -15,7 +15,7 @@ weib30parm = fread(file.path(outdir, 'scenarios_weib30.csv') )
 
 #### Constants
 
-set.seed(7928)
+set.seed(179286)
 nsim = 500 # This overrides 'nsim' in the scenario-generation scripts
 M = 8
 n = 60

@@ -82,7 +82,7 @@ i90stack = i90stack[!grepl('slow', Framework) ]
 
 
 point90r = sideside(p90stack, titl = '')
-point90rzoom = sideside(p90stack[estimate != 'dm48', ], titl = '') 
+point90rzoom = sideside(p90stack[!(estimate %in% c('rev1', 'dm48') ), ], titl = '') 
 
 ggsave(point90r, file = file.path(outdir, 'sim_rmse90.pdf'),
 			 width = wid, height = hgt) 
