@@ -20,13 +20,16 @@ intnice = c('Revs. (Wetherill)', 'Avg. from R3', 'Dynamic Avg.', 'CIR', 'IR' ,  
 #-------------------------- Atomic Utilities
 
 ### Point estimate performance
-pmetrix <- function(simout, estnames = pointnames, combine = TRUE, bigerr = 0.9, ...) 
+pmetrix <- function(simout, estnames = pointnames, combine = TRUE, 
+					bigerr = 0.9, apples2apples = TRUE,...) 
 {
 require(data.table)
 simdat = copy(simout)
 
 # combining CIR and dynamean
 if(combine) simdat[ , dual := ifelse(is.na(cir), dyna, (cir+dyna)/2 ) ]
+# Potentially excluding rows w/o CIR estimate
+if(apples2apples) simdat = simdat[!is.na(cir), ]
 
 calcnames = intersect(estnames, names(simdat) )
 
@@ -35,7 +38,7 @@ simdat[ ,apply(.SD, 2, trio, ref=true, p=bigerr), .SDcol = calcnames ]
 
 ### Interval performance (coverage and width)
 
-imetrix <- function(simout, combine = TRUE,  ...)
+imetrix <- function(simout, combine = TRUE, apples2apples = TRUE,  ...)
 {
 require(data.table)
 simdat = copy(simout)
@@ -46,6 +49,8 @@ if(combine)
 	simdat[ , duall := ifelse(is.na(cirl), dynal, (cirl+dynal)/2 ) ]
 	simdat[ , dualu := ifelse(is.na(ciru), dynau, (ciru+dynau)/2 ) ]
 } 
+# Potentially excluding rows w/o CIR estimate
+if(apples2apples) simdat = simdat[!is.na(cir), ]
 	
 dout = simdat[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
 	rev1 = mean(rev1l<=true & rev1u>=true, na.rm=TRUE),
@@ -58,8 +63,8 @@ dout = simdat[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
 
 	simdat[ , cirfin := (is.finite(ciru) & is.finite(cirl) ) ]
 	simdat[ , irfin :=  (is.finite(iru) & is.finite(irl) ) ]
-	simdat[ , cbfin :=  ifelse(exists('cbootl'), 
-						(is.finite(cbootu) & is.finite(cbootl) ), NA) ]
+#	simdat[ , cbfin :=  ifelse(exists('cbootl'), 
+#						(is.finite(cbootu) & is.finite(cbootl) ), NA) ]
 
 
 rbind(dout, simdat[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
@@ -67,8 +72,8 @@ rbind(dout, simdat[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
 	dyna = mean(dynau - dynal, na.rm=TRUE),
 	cir = mean(ciru[cirfin] - cirl[cirfin]),
 	dual = ifelse(combine, mean(dualu - duall, na.rm=TRUE), NA),
-	ir = mean(iru[irfin] - irl[irfin]),
-	cfinite = mean(cirfin) 
+	ir = mean(iru[irfin] - irl[irfin])
+#	cfinite = mean(cirfin) 
 #	liao = ifelse(addLiao, mean(liaou - liaol, na.rm=TRUE), NA),
 #	cirboot = mean(cbootu[cbfin] - cbootl[cbfin], na.rm=TRUE) 
 	) ], fill = TRUE )
@@ -92,7 +97,7 @@ stackem <- function(metr, outnames = NULL, framework, finites = TRUE, ...)
 
 #-------------------------- Combining Atomic Utilities
 
-combo <- function(simlist, atomfun = pmetrix, ...) 
+combo <- function(simlist, atomfun = pmetrix, finites = TRUE,...) 
 {
 	require(data.table)
 	
@@ -103,8 +108,14 @@ combo <- function(simlist, atomfun = pmetrix, ...)
 	{
 #	cat(simlist[a],'\n')
 		dout = rbind(dout, stackem(metrics[[a]], 
-			framework = gsub('^est', '', simlist[a]), ... ) )
+			framework = gsub('est', '', simlist[a]), ... ) )
 			}
+	if(finites)
+	{
+		tmp = sapply(simlist, function(x) mean( is.finite(get(x)$cir) ) )
+		dout = rbind(dout, data.table(Metric = 'Finite CIR', 
+		Framework = gsub('est', '', names(tmp) ), Value = tmp), fill = TRUE)
+	}
 	dout
 }
 

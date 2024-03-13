@@ -11,9 +11,10 @@ outdir = '../../output'
 
 #### Simple performance metrics, with some twists
 
-rmse = function(x,ref,na.rm = TRUE, winsor = FALSE) 
+rmse = function(x,ref,na.rm = TRUE, exclude = NULL, winsor = FALSE) 
 {
 	tmp = (x-ref)^2
+	if(!is.null(exclude)) tmp = tmp[-exclude]
 	if(winsor) tmp[is.na(tmp)] = max(tmp, na.rm = TRUE)
 	sqrt(mean(tmp, na.rm=na.rm))
 }
@@ -108,8 +109,12 @@ bootdoses = boots$x
 ### isotonics
 	tmp1 = try(udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
 	balancePt = bpt, conf = conf) )
-	tmp2 = try(udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
-	balancePt = bpt, conf = conf, estfun = oldPAVA) )
+# IR now w/o the works!
+	tmp2 = try(quickInverse(x=simdat$doses[1:n, a], y=simdat$response[1:n,a], 
+	target=target, conf = conf, estfun = oldPAVA) )
+
+#	tmp2 = try(udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
+#	balancePt = bpt, conf = conf, estfun = oldPAVA) )
 	eout$cir = ifelse( 'data.frame' %in% class(tmp1), tmp1$point, NA)
 	eout$ir = ifelse( 'data.frame' %in% class(tmp2),tmp2$point, NA)
 
