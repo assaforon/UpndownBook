@@ -47,7 +47,7 @@ int50c = int50c + geom_hline(yintercept = c(85,95), lty=3) + labs(color='Family'
 int50w = sideside(i50stack, metric = 'Width')
 int50w = int50w + labs(color='Family')
 
-stop(base::date(), 'Check plots!\n')
+# stop(base::date(), 'Check plots!\n')
 
 
 

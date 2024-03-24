@@ -33,6 +33,8 @@ i30stack = combo(e30w, atomfun = imetrix, outnames = inames, finites = FALSE)
 i30stack[ , Design := factor(substr(gsub('^h','',Framework), 1, 2), labels = des4) ]
 
 
+#-------- Plots: point, n=30
+
 point30n1r = sideside(p30stack[!grepl('Group',Design) & grepl('^h',Framework), ])
 ggsave(point30n1r, file = file.path(outdir, 'sim_rmse30n1.pdf'),
 			 width = wid, height = hgt) 
@@ -41,6 +43,37 @@ point30n1rg = sideside(p30stack[estimate %in% gpoints & grepl('^h',Framework), ]
 					colkey = colors4)
 ggsave(point30n1rg, file = file.path(outdir, 'sim_rmse30n1g.pdf'),
 			 width = wid, height = hgt) 
+
+#point30n1b = sideside(p30stack[!grepl('Group',Design) & grepl('^h',Framework),],
+#				metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)
+#ggsave(point30n1b, file = file.path(outdir, 'sim_bias30n1.pdf'),
+#			 width = wid, height = hgt) 
+
+point30n1bg = sideside(p30stack[estimate %in% gpoints & grepl('^h',Framework),],
+	metric = 'Bias', colkey = colors4, zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)
+ggsave(point30n1bg, file = file.path(outdir, 'sim_bias30n1g.pdf'),
+			 width = wid, height = hgt) 
+
+#-------- Plots: point, n=60
+
+point30n2r = sideside(p30stack[!grepl('Group',Design) & !grepl('^h',Framework), ])
+ggsave(point30n2r, file = file.path(outdir, 'sim_rmse30n2.pdf'),
+			 width = wid, height = hgt) 
+
+point30n2rg = sideside(p30stack[estimate %in% gpoints & !grepl('^h',Framework), ],
+					colkey = colors4)
+ggsave(point30n2rg, file = file.path(outdir, 'sim_rmse30n2g.pdf'),
+			 width = wid, height = hgt) 
+
+point30n2bg = sideside(p30stack[estimate %in% gpoints & !grepl('^h',Framework),],
+	metric = 'Bias', colkey = colors4, zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)
+ggsave(point30n2bg, file = file.path(outdir, 'sim_bias30n2g.pdf'),
+			 width = wid, height = hgt) 
+
+
+
+
+
 
 #sideside(p30stack[estimate %in% gpoints & !grepl('^h',Framework), ],metric='MAE90', colkey = colors4)
 
