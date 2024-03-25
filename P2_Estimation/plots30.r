@@ -71,6 +71,26 @@ ggsave(point30n2bg, file = file.path(outdir, 'sim_bias30n2g.pdf'),
 			 width = wid, height = hgt) 
 
 
+#-------- Plots: interval, n=30
+
+int30n1c = sideside(i30stack[!grepl('Group',Design) & grepl('^h',Framework), ], metric = 'Coverage', titl = '', zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100)
+ggsave(point30n1r, file = file.path(outdir, 'sim_cover30n1.pdf'),
+			 width = wid, height = hgt) 
+
+point30n1rg = sideside(p30stack[estimate %in% gpoints & grepl('^h',Framework), ],
+					colkey = colors4)
+ggsave(point30n1rg, file = file.path(outdir, 'sim_rmse30n1g.pdf'),
+			 width = wid, height = hgt) 
+
+#point30n1b = sideside(p30stack[!grepl('Group',Design) & grepl('^h',Framework),],
+#				metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)
+#ggsave(point30n1b, file = file.path(outdir, 'sim_bias30n1.pdf'),
+#			 width = wid, height = hgt) 
+
+point30n1bg = sideside(p30stack[estimate %in% gpoints & grepl('^h',Framework),],
+	metric = 'Bias', colkey = colors4, zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)
+ggsave(point30n1bg, file = file.path(outdir, 'sim_bias30n1g.pdf'),
+			 width = wid, height = hgt) 
 
 
 
