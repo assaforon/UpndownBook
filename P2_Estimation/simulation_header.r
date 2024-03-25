@@ -52,7 +52,7 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 
 estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 3, 
 			n = NULL, nsim = NULL,  B = 250, randboot = TRUE, 
-			cirb = FALSE, desfun=krow, desargs=list(k=1), 
+			cirb = FALSE, desfun=krow, desargs=list(k=1), ccurvy = NULL,
 			doseset = NULL, conf = 0.9, bigerr = 0.9, addLiao = FALSE)
 
 {
@@ -108,7 +108,7 @@ bootdoses = boots$x
 
 ### isotonics
 	tmp1 = try(udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
-	balancePt = bpt, conf = conf) )
+	balancePt = bpt, conf = conf, curvedCI = ccurvy) )
 # IR now w/o the works!
 	tmp2 = try(quickInverse(x=simdat$doses[1:n, a], y=simdat$response[1:n,a], 
 	target=target, conf = conf, estfun = oldPAVA) )
@@ -152,7 +152,7 @@ bootdoses = boots$x
                         all = FALSE, rstart = 1, conf = NULL)						
 			if(cirb) {
 				cirboot[b] = try(udest(x = bootdoses[1:n,b], y = boots$y[,b], 
-                        conf = NULL, target = target, balancePt = bpt)	)
+                        conf = NULL, target = target, balancePt = bpt, curvedCI = ccurvy)	)
 						if(!is.finite(cirboot[b])) cirboot[b] = NA
 			}
 	}	
