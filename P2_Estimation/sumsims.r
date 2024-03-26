@@ -124,7 +124,7 @@ combo <- function(simlist, atomfun = pmetrix, finites = TRUE,...)
 sideside <- function(omnibus, metric = 'RMSE', fsize = 15, jwid = 0.1, yref = NULL,
 			zoom = c(0, NA), expansion = c(0, 0.02), psize = 4, rotlab = TRUE,
 			innames = pointnames, outnames = pointnice, desvar = TRUE, multip = 1,
-			colkey = c('grey65', 'black'), titl = '', addmean = TRUE)
+			colkey = c('grey65', 'black'), titl = '', addmean = TRUE, ytext =  NULL)
 {
 require(plyr)
 require(forcats)
@@ -140,7 +140,7 @@ if(addmean) pmeans = pdat[, list(Value = mean(multip*Value)), keyby = 'Estimate'
 
 pout = ggplot(pdat, aes(Estimate, multip*Value))  +
                 scale_y_continuous(expand = expansion, limits = zoom )	+ 
-				labs(y = metric, x='', title = titl)
+				labs(y = ifelse(is.null(ytext), paste(metric, '(spacing units)'), ytext), x='', title = titl)
 
 if(!is.null(yref)) pout = pout + geom_hline(yintercept = yref)
 
