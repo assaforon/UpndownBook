@@ -44,7 +44,7 @@ thresh30l = matrix(runif(n*nsim), nrow=n)
 kl30minmid = dfsim(n, starting = lostart, Fvals=logi30F, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30l)					
 estkl30minmid = estbatch(kl30minmid, truth=logi30parm$t30[1:nsim], target=.3, 
-					bpt=ktarg30, desfun=krow, desargs=k30list)
+					bpt=ktarg30, desfun=krow, ccurvy = TRUE, desargs=k30list)
 	
 # Good pausing point to see the output of one framework 
  
@@ -53,19 +53,19 @@ estkl30minmid = estbatch(kl30minmid, truth=logi30parm$t30[1:nsim], target=.3,
 kl30midmid = dfsim(n, starting = M/2, Fvals=logi30F, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30l)					
 estkl30midmid = estbatch(kl30midmid, truth=logi30parm$t30[1:nsim], target=.3, bpt=ktarg30, 
-				desfun=krow, desargs=k30list)
+				desfun=krow, ccurvy = TRUE, desargs=k30list)
 
 kl30minhi = dfsim(n, starting = 1, Fvals=logi30Fu, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30l)					
 estkl30minhi = estbatch(kl30minhi, truth=logi30parm$t30[1:nsim]+2, target=.3, 
-					bpt=ktarg30, desfun=krow, desargs=k30list)
+					bpt=ktarg30, desfun=krow, ccurvy = TRUE, desargs=k30list)
 # estkl30minhi_2 = estbatch(kl30minhi, truth=logi30parm$t30[1:nsim]+2, target=.3, 
-	#				bpt=ktarg30, desfun=krow, desargs=k30list, randboot = FALSE)
+	#				bpt=ktarg30, desfun=krow, ccurvy = TRUE, desargs=k30list, randboot = FALSE)
 
 kl30minlo = dfsim(n, starting = 1, Fvals=logi30Fl, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30l)					
 estkl30minlo = estbatch(kl30minlo, truth=logi30parm$t30[1:nsim]-2, target=.3, 
-					bpt=ktarg30, desfun=krow, desargs=k30list)
+					bpt=ktarg30, desfun=krow, ccurvy = TRUE, desargs=k30list)
 	
 cat('k standard\n')	
 					
@@ -74,22 +74,22 @@ cat('k standard\n')
 bl30minmid = dfsim(n, starting = lostart, Fvals=logi30F, ensemble=nsim,
 						design=bcd, desArgs=b30list, thresholds = thresh30l)					
 estbl30minmid = estbatch(bl30minmid, truth=logi30parm$t30[1:nsim], target=.3, 
-					 desfun=bcd, desargs=b30list)
+					 desfun=bcd, ccurvy = TRUE, desargs=b30list)
 		
 bl30midmid = dfsim(n, starting = M/2, Fvals=logi30F, ensemble=nsim,
 						design=bcd, desArgs=b30list, thresholds = thresh30l)			
 estbl30midmid = estbatch(bl30midmid, truth=logi30parm$t30[1:nsim], target=.3,  
-				desfun=bcd, desargs=b30list)
+				desfun=bcd, ccurvy = TRUE, desargs=b30list)
 
 bl30minhi = dfsim(n, starting = 1, Fvals=logi30Fu, ensemble=nsim,
 						design=bcd, desArgs=b30list, thresholds = thresh30l)			
 estbl30minhi = estbatch(bl30minhi, truth=logi30parm$t30[1:nsim]+2, target=.3, 
-					 desfun=bcd, desargs=b30list)
+					 desfun=bcd, ccurvy = TRUE, desargs=b30list)
 
 bl30minlo = dfsim(n, starting = 1, Fvals=logi30Fl, ensemble=nsim,
 						design=bcd, desArgs=b30list, thresholds = thresh30l)			
 estbl30minlo = estbatch(bl30minlo, truth=logi30parm$t30[1:nsim]-2, target=.3, 
-					 desfun=bcd, desargs=b30list)
+					 desfun=bcd, ccurvy = TRUE, desargs=b30list)
 
 cat('b standard\n')						
 

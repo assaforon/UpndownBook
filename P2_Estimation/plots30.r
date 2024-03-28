@@ -72,7 +72,7 @@ ggsave(point30n2bg, file = file.path(outdir, 'sim_bias30n2g.pdf'),
 			 width = wid, height = hgt) 
 
 
-#-------- Plots: interval, n=30
+#-------- Plots: interval
 
 int30n1cg = sideside(i30stack[estimate %in% gpoints[-1] & grepl('^h',Framework), ], metric = 'Coverage', titl = '', 
 		zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100, colkey = colors4)

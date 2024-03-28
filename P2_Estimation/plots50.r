@@ -51,11 +51,11 @@ int50w = int50w + labs(color='Family')
 
 
 
-ggsave(point50r + labs(y = "RMSE (spacing units)", title = ''),
-			file = file.path(outdir, 'sim_rmse50.pdf'), width=wid, height=hgt)
+ggsave(point50r,	file = file.path(outdir, 'sim_rmse50.pdf'), width=wid, height=hgt)
 
-ggsave(point50b + labs(y = "Bias (spacing units)", title = ''),
-			file = file.path(outdir, 'sim_bias50.pdf'), width=wid, height=hgt)
+ggsave(point50q,	file = file.path(outdir, 'sim_mae50.pdf'), width=wid, height=hgt)
+
+ggsave(point50b ,	file = file.path(outdir, 'sim_bias50.pdf'), width=wid, height=hgt)
 
 ggsave(int50c + labs(y = "Interval Coverage (%)", title = ''),
 			file = file.path(outdir, 'sim_cover50.pdf'), width=wid, height=hgt)
