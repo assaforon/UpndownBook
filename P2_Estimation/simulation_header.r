@@ -2,7 +2,6 @@
 library(cir)
 library(upndown)
 library(data.table)
-setDTthreads(2)
 
 ####----------------------- Constants and quick Utilities
 
