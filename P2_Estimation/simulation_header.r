@@ -52,7 +52,7 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 estbatch <- function(simdat, truth, target, bpt=target, rawout=TRUE, cores = 13, 
 			n = NULL, nsim = NULL,  B = 250, randboot = TRUE, 
 			cirb = FALSE, desfun=krow, desargs=list(k=1), ccurvy = NULL,
-			doseset = NULL, conf = 0.9, bigerr = 0.9, addLiao = FALSE)
+			doseset = NULL, conf = 0.9, bigerr = 0.9)
 
 {
 cat(base::date(), '\n')
@@ -79,6 +79,7 @@ if(length(truth) == 1) truth = rep(truth, nsim)
 truth = truth[1:nsim]
 if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 
+#--------------------- Parallel loop
 
 ests0 <- foreach(a = 1:nsim,  
 			.packages = c('cir','upndown','plyr') ) %dopar%  {
@@ -99,10 +100,10 @@ bootdoses = boots$x
 
 ### Averaging estimators
 	eout$dm48 = dixonmood(simdat$doses[1:n, a], simdat$response[1:n,a])
-	eout$all1 = reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=1, conf = NULL)
-	eout$all3 = reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=3, conf = NULL)
+	eout$all1 = try(reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=1, conf = NULL) )
+	eout$all3 = try(reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=3, conf = NULL) )
 # Wetherill's estimator
-	eout$rev1 = reversmean(simdat$doses[1:n,a],simdat$response[1:n,a],rstart=1, all=FALSE, conf = NULL)
+	eout$rev1 = try( reversmean(simdat$doses[1:n,a],simdat$response[1:n,a],rstart=1, all=FALSE, conf = NULL) )
 	eout$dyna = dynamean(simdat$doses[1:(n+1),a], maxExclude = 1/2, conf = NULL)
 
 ### isotonics
@@ -124,13 +125,6 @@ bootdoses = boots$x
 	eout$ciru = ifelse( 'data.frame' %in% class(tmp1), unlist(tmp1[4]), NA)
 	eout$irl = ifelse( 'data.frame' %in% class(tmp2), unlist(tmp2[3]), NA)
 	eout$iru = ifelse( 'data.frame' %in% class(tmp2), unlist(tmp2[4]), NA)
-	if(addLiao)
-	{
-		tmp3 = udest(simdat$doses[1:n, a], simdat$response[1:n,a], target=target, 
-				balancePt = bpt, conf = conf, intfun = liaoCI)
-		eout$liaol = unlist(tmp3[3])
-		eout$laiuu = unlist(tmp4[4])
-	}
 
 # Dynamic mean also already available via the dfboot call:
 	
@@ -145,10 +139,10 @@ bootdoses = boots$x
 	cirboot = all3boot
 	for(b in 1:B) 
 	{
-			all3boot[b] = reversmean(x = bootdoses[,b], y = boots$y[,b], 
-                       conf = NULL)			
-			rev1boot[b] = reversmean(x = bootdoses[,b], y = boots$y[,b], 
-                        all = FALSE, rstart = 1, conf = NULL)						
+			all3boot[b] = try(reversmean(x = bootdoses[,b], y = boots$y[,b], 
+                       conf = NULL) )	
+			rev1boot[b] = try(reversmean(x = bootdoses[,b], y = boots$y[,b], 
+                        all = FALSE, rstart = 1, conf = NULL) )					
 			if(cirb) {
 				cirboot[b] = try(udest(x = bootdoses[1:n,b], y = boots$y[,b], 
                         conf = NULL, target = target, balancePt = bpt, curvedCI = ccurvy)	)
@@ -207,7 +201,6 @@ tmp$widths = ests[ , list(all3 = mean(all3u - all3l, na.rm=TRUE),
 	cir = mean(ciru[cirfin] - cirl[cirfin]),
 	ir = mean(iru[irfin] - irl[irfin]),
 	cfinite = mean(cirfin) , ifinite = mean(irfin),
-#	liao = ifelse(addLiao, mean(liaou - liaol, na.rm=TRUE), NA),
 	cirboot = ifelse(cirb, NA, mean(cbootu - cbootl, na.rm=TRUE) ) 
 	) ] 
 

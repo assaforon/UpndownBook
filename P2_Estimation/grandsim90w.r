@@ -67,19 +67,19 @@ estkw90minhi = estbatch(kw90minhi, truth=weib90parm$t90[1:nsim]+3, target=.9,
 					bpt=ktarg90, desfun=krow, desargs=k90list)
 	
 cat('k standard\n')	
-### k-row variants
+### k-row variants - commented out now
 
 # Turning off fastStart
-kw90himid_slow = dfsim(60, starting = histart, Fvals=weib90F, ensemble=nsim,
-						desArgs=list(k=6, lowTarget=FALSE, fastStart=FALSE), 
-						thresholds = thresh90w)					
-estkw90himid_slow = estbatch(kw90himid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
-					bpt=ktarg90, desfun=krow, desargs=k90list)
-kw90lomid_slow = dfsim(60, starting = lostart, Fvals=weib90F, ensemble=nsim,
-						desArgs=list(k=6, lowTarget=FALSE, fastStart=FALSE), 
-						thresholds = thresh90w)					
-estkw90lomid_slow = estbatch(kw90lomid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
-					bpt=ktarg90, desfun=krow, desargs=k90list)
+# kw90himid_slow = dfsim(60, starting = histart, Fvals=weib90F, ensemble=nsim,
+						# desArgs=list(k=6, lowTarget=FALSE, fastStart=FALSE), 
+						# thresholds = thresh90w)					
+# estkw90himid_slow = estbatch(kw90himid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
+					# bpt=ktarg90, desfun=krow, desargs=k90list)
+# kw90lomid_slow = dfsim(60, starting = lostart, Fvals=weib90F, ensemble=nsim,
+						# desArgs=list(k=6, lowTarget=FALSE, fastStart=FALSE), 
+						# thresholds = thresh90w)					
+# estkw90lomid_slow = estbatch(kw90lomid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
+					# bpt=ktarg90, desfun=krow, desargs=k90list)
 
 ### Commented out after initial checking
 # Playing with k
@@ -118,19 +118,19 @@ estbw90minhi = estbatch(bw90minhi, truth=weib90parm$t90[1:nsim]+3, target=.9,
 					 desfun=bcd, desargs=b90list)
 
 cat('b standard\n')						
-### BCD variants
+### BCD variants - commented out now
 
 # Turning off fastStart
-bw90himid_slow = dfsim(60, starting = histart, Fvals=weib90F, ensemble=nsim,
-						design=bcd, desArgs=list(coin=1/9, lowTarget=FALSE, fastStart=FALSE), 
-						thresholds = thresh90w)					
-estbw90himid_slow = estbatch(bw90himid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
-					 desfun=bcd, desargs=b90list)
-bw90lomid_slow = dfsim(60, starting = lostart, Fvals=weib90F, ensemble=nsim,
-						design=bcd, desArgs=list(coin=1/9, lowTarget=FALSE, fastStart=FALSE), 
-						thresholds = thresh90w)					
-estbw90lomid_slow = estbatch(bw90lomid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
-					 desfun=bcd, desargs=b90list)
+# bw90himid_slow = dfsim(60, starting = histart, Fvals=weib90F, ensemble=nsim,
+						# design=bcd, desArgs=list(coin=1/9, lowTarget=FALSE, fastStart=FALSE), 
+						# thresholds = thresh90w)					
+# estbw90himid_slow = estbatch(bw90himid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
+					 # desfun=bcd, desargs=b90list)
+# bw90lomid_slow = dfsim(60, starting = lostart, Fvals=weib90F, ensemble=nsim,
+						# design=bcd, desArgs=list(coin=1/9, lowTarget=FALSE, fastStart=FALSE), 
+						# thresholds = thresh90w)					
+# estbw90lomid_slow = estbatch(bw90lomid_slow, truth=weib90parm$t90[1:nsim], target=.9, 
+					 # desfun=bcd, desargs=b90list)
 
 save.image(file.path(outdir, 'grandsim90w.RData'))					
 cat('b variants and done.\n')					

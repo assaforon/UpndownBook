@@ -34,38 +34,38 @@ i90stack[ , Design := factor(substr(Framework, 1, 1), labels = desnames) ]
 p90stack[ , baseframe := gsub('[_]slow', '', Framework) ]
 
 
-#### Creating a regular vs. quick-start dataset
+#### Creating a regular vs. quick-start dataset - commented out b/c already saved.
 
-p90mash = merge(p90stack[Metric == 'MAE90' & estimate=='cir' & !grepl('slow', Framework)],
-				p90stack[Metric == 'MAE90' & estimate=='cir' & grepl('slow', Framework)],
-					all = FALSE, by = c('Design', 'Metric', 'baseframe') )
+# p90mash = merge(p90stack[Metric == 'MAE90' & estimate=='cir' & !grepl('slow', Framework)],
+				# p90stack[Metric == 'MAE90' & estimate=='cir' & grepl('slow', Framework)],
+					# all = FALSE, by = c('Design', 'Metric', 'baseframe') )
 					
-i90stack[ , baseframe := gsub('[_]slow', '', Framework) ]
-i90mash = merge(i90stack[Metric == 'Coverage' & estimate=='cir' & !grepl('slow', Framework)],
-		i90stack[Metric == 'Coverage' & estimate=='cir' & grepl('slow', Framework)],
-					all = FALSE, by = c('Design', 'Metric', 'baseframe') ) 
+# i90stack[ , baseframe := gsub('[_]slow', '', Framework) ]
+# i90mash = merge(i90stack[Metric == 'Coverage' & estimate=='cir' & !grepl('slow', Framework)],
+		# i90stack[Metric == 'Coverage' & estimate=='cir' & grepl('slow', Framework)],
+					# all = FALSE, by = c('Design', 'Metric', 'baseframe') ) 
 
-#------------------ Plotting quick-start
-### plot constants
+# #------------------ Plotting quick-start
+# ### plot constants
 
-y1max = max(c(p90mash$Value.x, p90mash$Value.y))
+# y1max = max(c(p90mash$Value.x, p90mash$Value.y))
 
-labelz = scale_x_continuous(labels = c(paste('BCD,',c('High', 'Low'),'Start'), paste('K-row,',c('High', 'Low'),'Start') ) )
+# labelz = scale_x_continuous(labels = c(paste('BCD,',c('High', 'Low'),'Start'), paste('K-row,',c('High', 'Low'),'Start') ) )
 
-rotate = theme(axis.text.x = element_text(angle = 45, hjust=1) )
+# rotate = theme(axis.text.x = element_text(angle = 45, hjust=1) )
 
-rspace = theme(plot.margin = unit(c(0,30,0,0), "pt"))	
+# rspace = theme(plot.margin = unit(c(0,30,0,0), "pt"))	
 
-### The actual plots
+# ### The actual plots
 
-	p90mash[ , align := 1:4]	
-	p1 <- ggplot(p90mash, aes(x=align, y=Value.y)) + geom_point(color='grey', size = 5) +
-			geom_segment(aes(xend=align, yend=Value.x), arrow = arrow(length=unit(0.03,'npc')) , lineend='round',linejoin='round', linewidth=1.5) + ylim(0,y1max) + geom_point(aes(y=Value.x), size = 5) + labs(x='', y='MAE90 (spacing units)') + labelz + rotate
+	# p90mash[ , align := 1:4]	
+	# p1 <- ggplot(p90mash, aes(x=align, y=Value.y)) + geom_point(color='grey', size = 5) +
+			# geom_segment(aes(xend=align, yend=Value.x), arrow = arrow(length=unit(0.03,'npc')) , lineend='round',linejoin='round', linewidth=1.5) + ylim(0,y1max) + geom_point(aes(y=Value.x), size = 5) + labs(x='', y='MAE90 (spacing units)') + labelz + rotate
 	
-	i90mash[ , align := 1:4]	
-	p2 <- ggplot(i90mash, aes(x=align, y=100*Value.y)) + geom_point(color='grey', size = 5) +
-			geom_segment(aes(xend=align, yend=100*Value.x), arrow = arrow(length=unit(0.03,'npc')) , lineend='round',linejoin='round', linewidth=1.5) + geom_point(aes(y=100*Value.x), size = 5) + labs(x='', y='Interval Coverage (%)') + labelz +
-			geom_hline(yintercept = 90) + geom_hline(yintercept = 85, lty=2) + rotate
+	# i90mash[ , align := 1:4]	
+	# p2 <- ggplot(i90mash, aes(x=align, y=100*Value.y)) + geom_point(color='grey', size = 5) +
+			# geom_segment(aes(xend=align, yend=100*Value.x), arrow = arrow(length=unit(0.03,'npc')) , lineend='round',linejoin='round', linewidth=1.5) + geom_point(aes(y=100*Value.x), size = 5) + labs(x='', y='Interval Coverage (%)') + labelz +
+			# geom_hline(yintercept = 90) + geom_hline(yintercept = 85, lty=2) + rotate
 	
 ### Arranging and saving; the syntax is from the "patchwork" package
 
