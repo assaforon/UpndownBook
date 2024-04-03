@@ -34,6 +34,10 @@ i50stack[ , Design := factor(substr(Framework, 1, 1),
 
 #------------------- Plots
 
+pdf(file.path(outdir, 'sim_scatter50.pdf'), width = 12, height = 4.3)
+estscatter(rbind(estw50midmid,estw50maxlo,estw50minhi), size=.3)
+dev.off()
+
 point50r = sideside(p50stack)
 point50r = point50r + labs(color='Family')
 point50b = sideside(p50stack, metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)

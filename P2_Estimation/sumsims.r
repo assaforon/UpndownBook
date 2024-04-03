@@ -121,6 +121,8 @@ combo <- function(simlist, atomfun = pmetrix, finites = TRUE,...)
 
 #--------------------------  Plotting
 
+###### Side-by-side estimator comparison
+
 sideside <- function(omnibus, metric = 'RMSE', fsize = 15, jwid = 0.1, yref = NULL,
 			zoom = c(0, NA), expansion = c(0, 0.02), psize = 4, rotlab = TRUE,
 			innames = pointnames, outnames = pointnice, desvar = TRUE, multip = 1,
@@ -157,6 +159,24 @@ if(rotlab) pout = pout + theme(axis.text.x = element_text(angle = 45, hjust=1) )
 pout
 }
 
+################### True vs. Estimate scatters
+
+estscatter <- function(estdat, ests = c('rev1', 'dyna', 'cir'), estnames = c('Reversal Estimator', 'Dynamic Average', 'CIR'), size = 0.5)
+{
+nests = length(ests)
+
+y = estdat[ , get(ests[1]) ]
+for (a in 2:nests) y = c(y, estdat[ , get(ests[a]) ] )
+leems = range(y, na.rm = TRUE)
+layout(t(1:nests))
+par(mar = c(3.,3.,3.,1), mgp = c(2,.6,0), tck = -0.01, las = 1)
+
+for(a in 1:nests) 
+{
+	plot(get(ests[a]) ~ true, data = estdat, main = estnames[a], cex = size, xlab = 'True Target Dose', ylab = 'Estimate', ylim = leems)
+	abline(-1, 1); abline(1, 1); abline(0, 1, lty=2)
+}
+}
 
 				
 

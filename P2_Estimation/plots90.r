@@ -81,6 +81,12 @@ p90stack = p90stack[!grepl('slow', Framework) ]
 i90stack = i90stack[!grepl('slow', Framework) ]
 
 
+pdf(file.path(outdir, 'sim_scatter90.pdf'), width = 12, height = 4.3)
+estscatter(rbind(estkw90himid,estkw90minhi), size=.3)
+dev.off()
+
+
+
 point90r = sideside(p90stack, titl = '')
 point90rzoom = sideside(p90stack[!(estimate %in% c('rev1', 'dm48') ), ], titl = '') 
 
