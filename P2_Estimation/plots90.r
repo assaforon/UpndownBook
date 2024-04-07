@@ -81,9 +81,11 @@ p90stack = p90stack[!grepl('slow', Framework) ]
 i90stack = i90stack[!grepl('slow', Framework) ]
 
 
-pdf(file.path(outdir, 'sim_scatter90.pdf'), width = 12, height = 4.3)
-estscatter(rbind(estkw90himid,estkw90minhi), size=.3)
+pdf(file.path(outdir, 'sim_scatter90.pdf'), width = 10, height = 5.5)
+estscatter(rbind(estkw90himid,estkw90minhi), size=.4)
 dev.off()
+
+stop('scat')
 
 
 

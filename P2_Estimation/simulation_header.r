@@ -8,6 +8,9 @@ library(data.table)
 outdir = '../../output'
 # source('code_for_Assaf.R')
 
+### New! Wetherill
+source('wetherill.r')
+
 #### Simple performance metrics, with some twists
 
 rmse = function(x,ref,na.rm = TRUE, exclude = NULL, winsor = FALSE) 
@@ -103,7 +106,8 @@ bootdoses = boots$x
 	eout$all1 = try(reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=1, conf = NULL) )
 	eout$all3 = try(reversmean(simdat$doses[1:(n+1),a],simdat$response[1:n,a],rstart=3, conf = NULL) )
 # Wetherill's estimator
-	eout$rev1 = try( reversmean(simdat$doses[1:n,a],simdat$response[1:n,a],rstart=1, all=FALSE, conf = NULL) )
+	eout$rev1 = try( reversmean(simdat$doses[1:n,a],simdat$response[1:n,a],rstart=1, all=FALSE, evenrevs = TRUE, conf = NULL) )
+#	eout$rev1 = try( wetherill(x=simdat$doses[1:n,a], y=simdat$response[1:n,a], conf = conf)
 	eout$dyna = dynamean(simdat$doses[1:(n+1),a], maxExclude = 1/2, conf = NULL)
 
 ### isotonics

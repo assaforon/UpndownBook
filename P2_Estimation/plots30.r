@@ -34,11 +34,19 @@ i30stack = combo(e30w, atomfun = imetrix, outnames = inames, finites = FALSE)
 i30stack[ , Design := factor(substr(gsub('^h','',Framework), 1, 2), labels = des4) ]
 
 
-#-------- Plots: point, n=30
+#-------- Plots: scatter
 
-pdf(file.path(outdir, 'sim_scatter30n1.pdf'), width = 12, height = 4.3)
-estscatter(rbind(hestkw30midmid,hestkw30minhi,hestkw30minlo), size=.3)
+pdf(file.path(outdir, 'sim_scatter30n1.pdf'), width = 10, height = 5.5)
+estscatter(rbind(hestkw30midmid,hestkw30minhi,hestkw30minlo), size=.4)
 dev.off()
+
+pdf(file.path(outdir, 'sim_scatter30n2.pdf'), width = 10, height = 5.5)
+estscatter(rbind(estkw30midmid,estkw30minhi,estkw30minlo), size=.4)
+dev.off()
+
+stop('scat!')
+
+#-------- Plots: point, n=30
 
 point30n1r = sideside(p30stack[grepl('^h',Framework), ], colkey = colors4)
 ggsave(point30n1r, file = file.path(outdir, 'sim_rmse30n1.pdf'),
@@ -52,9 +60,6 @@ ggsave(point30n1b, file = file.path(outdir, 'sim_bias30n1.pdf'),
 
 #-------- Plots: point, n=60
 
-pdf(file.path(outdir, 'sim_scatter30n2.pdf'), width = 12, height = 4.3)
-estscatter(rbind(estkw30midmid,estkw30minhi,estkw30minlo), size=.3)
-dev.off()
 
 
 point30n2r = sideside(p30stack[!grepl('^h',Framework), ], colkey = colors4)

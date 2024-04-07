@@ -161,7 +161,7 @@ pout
 
 ################### True vs. Estimate scatters
 
-estscatter <- function(estdat, ests = c('rev1', 'dyna', 'cir'), estnames = c('Reversal Estimator', 'Dynamic Average', 'CIR'), size = 0.5)
+estscatter <- function(estdat, ests = c('rev1', 'cir'), estnames = c('Reversal Estimator', 'CIR'), size = 0.5)
 {
 nests = length(ests)
 
