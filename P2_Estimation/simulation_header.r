@@ -9,7 +9,7 @@ outdir = '../../output'
 # source('code_for_Assaf.R')
 
 ### New! Wetherill
-source('wetherill.r')
+# source('wetherill65.r')
 
 #### Simple performance metrics, with some twists
 

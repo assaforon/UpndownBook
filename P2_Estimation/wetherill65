@@ -1,5 +1,5 @@
-
-wetherill <- function(x, y, rstart = 1, conf = 0.9, full = FALSE)
+### "Wetherill" point estimate, with Wetherill - Levitt (65) confidence interval
+wetherill65 <- function(x, y, rstart = 1, conf = 0.9, full = FALSE)
 {
 require(cir)
 require(upndown)
