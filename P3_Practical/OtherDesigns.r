@@ -32,7 +32,7 @@ return(cand)
 
 ### wrapping CCD
 
-ccd <- function(doses, responses, hwidth=0.1, targ=0.3, shrink=FALSE, swt=1, boundout = c(TRUE, TRUE), ...)
+ccd <- function(doses, responses, hwidth=0.1, targ=0.3, pace=1, shrink=FALSE, swt=1, boundout = c(TRUE, TRUE), ...)
 {
 n=length(doses)
 if(length(responses)!=n) stop("Doses, reponses vector unequal in length.")
@@ -49,10 +49,15 @@ if(testy > targ+hwidth) return(currdose-1)
 # Boundary case
 if(testy == targ+hwidth && boundout[1]) return(currdose-1)
 # Below interval: go up
-if(testy < targ-hwidth) return(currdose+1)
-# Boundary case
-if(testy == targ-hwidth && boundout[2]) return(currdose+1)
-
+if(testy < targ-hwidth || (testy == targ-hwidth && boundout[2]) )
+{
+	if (pace>1)  ## optional safety pace for each escalation
+	{
+		runs=rle(doses)
+		if(runs$lengths[length(runs$lengths)] < pace) return(currdose)
+	}
+	return(currdose+1)
+}
 # Otherwise...... stay:
 return(currdose)
 }
@@ -60,7 +65,7 @@ return(currdose)
 #### Implementing Liu and Yuan (2015)'s BOIN interval design.
 # Package not required for this function, but look-up table such as that produced via BOIN::get.boundary() is needed
 
-boin <- function(doses, responses, lookup, hardstop = FALSE, excmin = 3, ...)
+boin <- function(doses, responses, lookup, hardstop = FALSE, pace = 1, excmin = 3, ...)
 {
 n=length(doses)
 if(length(responses)!=n) stop("Doses, reponses vector unequal in length.")
@@ -80,9 +85,14 @@ if(curry >= refnums[2]) {
 	return(currdose - 1)
 }
 
-# ...but before escalating we must check next dose still "open for business"
+# Before escalating, we must check next dose still "open for business"
 if(curry <= refnums[1]) 
 {
+	if (pace>1)  ## optional safety pace for each escalation
+	{
+		runs=rle(doses)
+		if(runs$lengths[length(runs$lengths)] < pace) return(currdose)
+	}
 	nextn = sum(doses == currdose + 1)
 	if(nextn < excmin) return(currdose + 1)
 	nextexc = lookup[4, lookup[1,] == nextn] 

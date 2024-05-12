@@ -36,8 +36,8 @@ skel4_05 = getprior(halfwidth = 0.05, target = 0.3, nu = 4, nlevel = M)
 skel2_05 = getprior(halfwidth = 0.05, target = 0.3, nu = 2, nlevel = M)
 skel6_05 = getprior(halfwidth = 0.05, target = 0.3, nu = 6, nlevel = M)
 
-boin10list = list(lookup = get.boundary(target=0.3,ncohort=30,cohortsize=1)$boundary_tab)
-ccd10list = list(hwidth=0.1, targ=0.3)
+boin10list = list(lookup = get.boundary(target=0.3,ncohort=30,cohortsize=1)$boundary_tab, pace = 2)
+ccd10list = list(hwidth=0.1, targ=0.3, pace = 2)
 
 lostart = 1
 
