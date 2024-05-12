@@ -38,6 +38,35 @@ trio = function(x,ref,na.rm=TRUE, p=0.9, ...) {
 	tmp
 }
 
+###--------------------------- Phase-I specific utilities
+
+### MTD selection
+#     Function returns an index of the "MTD" estimated dose
+# Fests: vector of F-hat estimates via the design's estimator of choice
+whichmtd<-function(Fests , targ, exclude=1,...) 
+{
+#print(Fests)
+if(min(Fests,na.rm=TRUE)>=exclude) {
+#	cat("worked?")
+	return(0) 
+ } else return(which.min(abs(Fests[Fests<exclude]-targ)))
+}
+
+
+inwindow=function(Fvals,lo,hi)
+{
+	if (lo>=hi) stop('low bound not lower than high bound!')
+	return(table(cut(Fvals,c(lo,hi))))
+}
+
+## How many treated on MTD?
+nstar=function(allocs,mtds) mapply(function(x,y) {sum(x==y & !is.na(x))},split(allocs,col(allocs)),mtds)
+
+## How many treated inside interval?
+ninterval=function(allocs,Fmat,lo,hi) mapply(function(x,y,lo,hi) 
+{refs=which(y>=lo & y<=hi);sum(x %in% refs & !is.na(x))},split(allocs,col(allocs)),split(Fmat,col(Fmat)),MoreArgs=list(lo=lo,hi=hi))
+
+
 ####----------------------- Functions to generate the dose-response scenarios
 
 weibshift <- function(shp, scl, targx = 5.5, targy)

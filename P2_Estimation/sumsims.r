@@ -4,7 +4,7 @@
 
 
 cat(base::date(), '\n')
-source('simulation_header.r')
+# source('simulation_header.r')
 
 
 ### Constants
@@ -28,7 +28,7 @@ simdat = copy(simout)
 
 # combining CIR and dynamean
 if(combine) simdat[ , dual := ifelse(is.na(cir), dyna, (cir+dyna)/2 ) ]
-# Potentially excluding rows w/o CIR estimate
+# Optionally excluding rows w/o CIR estimate
 if(apples2apples) simdat = simdat[!is.na(cir), ]
 
 calcnames = intersect(estnames, names(simdat) )
@@ -49,7 +49,7 @@ if(combine)
 	simdat[ , duall := ifelse(is.na(cirl), dynal, (cirl+dynal)/2 ) ]
 	simdat[ , dualu := ifelse(is.na(ciru), dynau, (ciru+dynau)/2 ) ]
 } 
-# Potentially excluding rows w/o CIR estimate
+# Optionally excluding rows w/o CIR estimate
 if(apples2apples) simdat = simdat[!is.na(cir), ]
 	
 dout = simdat[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
@@ -61,8 +61,8 @@ dout = simdat[ , list(all3 = mean(all3l<=true & all3u>=true, na.rm=TRUE),
 	cirboot = ifelse(exists('cbootl'), mean(cbootl<=true & cbootu>=true, na.rm=TRUE), NA) )
 	 ]
 
-	simdat[ , cirfin := (is.finite(ciru) & is.finite(cirl) ) ]
-	simdat[ , irfin :=  (is.finite(iru) & is.finite(irl) ) ]
+simdat[ , cirfin := (is.finite(ciru) & is.finite(cirl) ) ]
+simdat[ , irfin :=  (is.finite(iru) & is.finite(irl) ) ]
 #	simdat[ , cbfin :=  ifelse(exists('cbootl'), 
 #						(is.finite(cbootu) & is.finite(cbootl) ), NA) ]
 
@@ -137,6 +137,7 @@ theme_set(theme_bw(fsize))
 pdat = omnibus[Metric == metric & estimate %in% innames, ]
 pdat[ , Estimate := fct_relevel(mapvalues(estimate, innames, outnames, 
 						warn_missing = FALSE), outnames) ]
+if(!('Design' %in% names(pdat))) pdat[ , Design := 'All']						
 						
 if(addmean) pmeans = pdat[, list(Value = mean(multip*Value)), keyby = 'Estimate' ]
 
