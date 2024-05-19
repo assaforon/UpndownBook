@@ -20,7 +20,6 @@ weib30parm = fread(file.path(outdir, 'scenarios_weib30.csv') )
 
 #-------------------- Prep
 
-
 #### Constants
 
 set.seed(379286)
@@ -31,11 +30,7 @@ n = 30
 targ0 = 0.3
 
 ### Pre-filtering utility for scenarios
-inwindow=function(Fvals,lo,hi)
-{
-	if (lo>=hi) stop('low bound not lower than high bound!')
-	return(sum(Fvals >= lo & Fvals <= hi) )
-}
+
 maxdens = 3
 tootight = 0.15
 
@@ -109,56 +104,96 @@ restcrmw30minmid2_05 = crmbatch(crmw30minmid2_05, truth=truew30, target=targ0, h
 crmw30minmid6_05 = dfsim(n, starting = lostart, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
 						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
 restcrmw30minmid6_05 = crmbatch(crmw30minmid6_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel6_05)
-	
+
+cat('minmid\n')	
 # Good pausing point to see the output of one framework 
  
-stop('ha')	
+# stop('ha')	
 
 kw30midmid = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30w)					
-estkw30midmid = estbatch(kw30midmid, truth=weib30parm$t30[1:nsim], target=targ0, bpt=ktarg30, 
-				desfun=krow, ccurvy = TRUE, desargs=k30list)
+restkw30midmid = restbatch(kw30midmid, truth=truew30, target=targ0, bpt=ktarg30, halfwidth = 0.1)
 
+boinw30midmid = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design = boin,
+						desArgs=boin10list, thresholds = thresh30w)					
+restboinw30midmid = restbatch(boinw30midmid, truth=truew30, target=targ0, halfwidth = 0.1)
+
+ccdw30midmid = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design = ccd,
+						desArgs=ccd10list, thresholds = thresh30w)					
+restccdw30midmid = restbatch(ccdw30midmid, truth=truew30, target=targ0, halfwidth = 0.1)
+
+crmw30midmid4_10 = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel4_10, targ = targ0), thresholds = thresh30w)	
+restcrmw30midmid4_10 = crmbatch(crmw30midmid4_10, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel4_10)
+						
+crmw30midmid4_05 = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel4_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30midmid4_05 = crmbatch(crmw30midmid4_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel4_05)
+crmw30midmid2_05 = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel2_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30midmid2_05 = crmbatch(crmw30midmid2_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel2_05)
+crmw30midmid6_05 = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30midmid6_05 = crmbatch(crmw30midmid6_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel6_05)
+
+cat('midmid\n')
+	
 kw30minhi = dfsim(n, starting = 1, Fvals=weib30Fu, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30w)					
-estkw30minhi = estbatch(kw30minhi, truth=weib30parm$t30[1:nsim]+2, target=.3, 
-					bpt=ktarg30, desfun=krow, ccurvy = TRUE, desargs=k30list)
-# estkw30minhi_2 = estbatch(kw30minhi, truth=weib30parm$t30[1:nsim]+2, target=.3, 
-	#				bpt=ktarg30, desfun=krow, ccurvy = TRUE, desargs=k30list, randboot = FALSE)
+restkw30minhi = restbatch(kw30minhi, truth=truew30u, target=targ0, bpt=ktarg30, halfwidth = 0.1)
+
+boinw30minhi = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design = boin,
+						desArgs=boin10list, thresholds = thresh30w)					
+restboinw30minhi = restbatch(boinw30minhi, truth=truew30u, target=targ0, halfwidth = 0.1)
+
+ccdw30minhi = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design = ccd,
+						desArgs=ccd10list, thresholds = thresh30w)					
+restccdw30minhi = restbatch(ccdw30minhi, truth=truew30u, target=targ0, halfwidth = 0.1)
+
+crmw30minhi4_10 = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel4_10, targ = targ0), thresholds = thresh30w)	
+restcrmw30minhi4_10 = crmbatch(crmw30minhi4_10, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel4_10)
+						
+crmw30minhi4_05 = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel4_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minhi4_05 = crmbatch(crmw30minhi4_05, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel4_05)
+crmw30minhi2_05 = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel2_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minhi2_05 = crmbatch(crmw30minhi2_05, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel2_05)
+crmw30minhi6_05 = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minhi6_05 = crmbatch(crmw30minhi6_05, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel6_05)
+
+cat('minhi\n')	
 
 kw30minlo = dfsim(n, starting = 1, Fvals=weib30Fl, ensemble=nsim,
 						desArgs=k30list, thresholds = thresh30w)					
-estkw30minlo = estbatch(kw30minlo, truth=weib30parm$t30[1:nsim]-2, target=.3, 
-					bpt=ktarg30, desfun=krow, ccurvy = TRUE, desargs=k30list)
-	
-cat('k standard\n')	
-					
-########### BCD standard	
+restkw30minlo = restbatch(kw30minlo, truth=truew30l, target=targ0, bpt=ktarg30, halfwidth = 0.1)
 
-bw30minmid = dfsim(n, starting = lostart, Fvals=weib30F, ensemble=nsim,
-						design=bcd, desArgs=b30list, thresholds = thresh30w)					
-estbw30minmid = estbatch(bw30minmid, truth=weib30parm$t30[1:nsim], target=.3, 
-					 desfun=bcd, ccurvy = TRUE, desargs=b30list)
-		
-bw30midmid = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim,
-						design=bcd, desArgs=b30list, thresholds = thresh30w)			
-estbw30midmid = estbatch(bw30midmid, truth=weib30parm$t30[1:nsim], target=.3,  
-				desfun=bcd, ccurvy = TRUE, desargs=b30list)
+boinw30minlo = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design = boin,
+						desArgs=boin10list, thresholds = thresh30w)					
+restboinw30minlo = restbatch(boinw30minlo, truth=truew30l, target=targ0, halfwidth = 0.1)
 
-bw30minhi = dfsim(n, starting = 1, Fvals=weib30Fu, ensemble=nsim,
-						design=bcd, desArgs=b30list, thresholds = thresh30w)			
-estbw30minhi = estbatch(bw30minhi, truth=weib30parm$t30[1:nsim]+2, target=.3, 
-					 desfun=bcd, ccurvy = TRUE, desargs=b30list)
+ccdw30minlo = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design = ccd,
+						desArgs=ccd10list, thresholds = thresh30w)					
+restccdw30minlo = restbatch(ccdw30minlo, truth=truew30l, target=targ0, halfwidth = 0.1)
 
-bw30minlo = dfsim(n, starting = 1, Fvals=weib30Fl, ensemble=nsim,
-						design=bcd, desArgs=b30list, thresholds = thresh30w)			
-estbw30minlo = estbatch(bw30minlo, truth=weib30parm$t30[1:nsim]-2, target=.3, 
-					 desfun=bcd, ccurvy = TRUE, desargs=b30list)
+crmw30minlo4_10 = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel4_10, targ = targ0), thresholds = thresh30w)	
+restcrmw30minlo4_10 = crmbatch(crmw30minlo4_10, truth=truew30l, target=targ0, halfwidth = 0.1, skel = skel4_10)
+						
+crmw30minlo4_05 = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel4_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minlo4_05 = crmbatch(crmw30minlo4_05, truth=truew30l, target=targ0, halfwidth = 0.1, skel = skel4_05)
+crmw30minlo2_05 = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel2_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minlo2_05 = crmbatch(crmw30minlo2_05, truth=truew30l, target=targ0, halfwidth = 0.1, skel = skel2_05)
+crmw30minlo6_05 = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minlo6_05 = crmbatch(crmw30minlo6_05, truth=truew30l, target=targ0, halfwidth = 0.1, skel = skel6_05)
 
-cat('b standard\n')						
-
-save.image(file.path(outdir, 'grandsim30w.RData'))					
-cat('b variants and done.\n')					
+save.image(file.path(outdir, 'othersim30w.RData'))					
+cat('Done.\n')					
 									
 
 

@@ -101,8 +101,7 @@ qweib3 <- function(p, shp, scl, shift) qweibull(p, shape=shp, scale=scl) - shift
 ### Compatible with UDDs and interval designs
 ### Parallelized for Windows environment via 'foreach'
 
-restbatch <- function(simdat, truth, target, bpt=target, halfwidth, cores = 13, n = NULL, nsim = NULL,  
-					conf = 0.9, bigerr = 0.9)
+restbatch <- function(simdat, truth, target, bpt=target, halfwidth, cores = 13, n = NULL, nsim = NULL, conf = 0.9)
 {
 cat(base::date(), '\n')
 require(cir)
@@ -136,13 +135,14 @@ ests0 <- foreach(a = 1:nsim,
 	eout$pointest = ifelse( 'data.frame' %in% class(tmp1), tmp1$point, NA)
 
 ### Using isotonics for ordinal MTD estimate
-	tmp2 = quickIsotone(x=simdat$doses[1:n, a], y=simdat$responses[1:n,a], target=bpt, 
-	conf = conf, adaptiveShrink = TRUE) 
+	tmp2 = try(quickIsotone(x=simdat$doses[1:n, a], y=simdat$responses[1:n,a], target=bpt, 
+	conf = conf, adaptiveShrink = TRUE) )
 
-	eout$mtdest = tmp2$x[which.min(abs(tmp2$y-target))]
+	eout$mtdest = ifelse( 'data.frame' %in% class(tmp2), tmp2$x[which.min(abs(tmp2$y-target))], NA)
 	
-### Number within a tolerance interval
+### Est/number within a tolerance interval
 	goodF = which(simdat$scenarios[ ,a] >= target-halfwidth & simdat$scenarios[ ,a] <= target+halfwidth)
+	eout$goodest = (eout$mtdest %in% goodF)
 	eout$ninterval = sum(!is.na(simdat$doses[1:n, a]) & simdat$doses[1:n, a] %in% goodF )
 		
 	eout	
@@ -161,8 +161,7 @@ return(ests)
 ####---------------- Batch calculation of CRM estimators and their metrics  ###########
 ### Parallelized for Windows environment via 'foreach'
 
-crmbatch <- function(simdat, truth, target, skel, halfwidth, cores = 13, n = NULL, nsim = NULL,  
-					conf = 0.9, bigerr = 0.9)
+crmbatch <- function(simdat, truth, target, skel, halfwidth, cores = 13, n = NULL, nsim = NULL,  conf = 0.9)
 {
 cat(base::date(), '\n')
 require(dfcrm)
@@ -186,13 +185,15 @@ if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 ests0 <- foreach(a = 1:nsim,  
 			.packages = c('dfcrm','plyr') ) %dopar%  {
 	eout = data.frame(true = truth[a])
+	if(var(simdat$doses[1:n, a]) == 0) return(eout) # a dud run, will trigger errors if attempted
 
 	tmp = crm(prior=skel, target=target, level=simdat$doses[1:n, a], tox=simdat$responses[ , a])$ptox
 	eout$pointest = approx(tmp, 1:M, xout = target)$y 
 	eout$mtdest = which.min(abs(tmp-target))
 	
-### Number within a tolerance interval
+### Est/number within a tolerance interval
 	goodF = which(simdat$scenarios[ ,a] >= target-halfwidth & simdat$scenarios[ ,a] <= target+halfwidth)
+	eout$goodest = (eout$mtdest %in% goodF)
 	eout$ninterval = sum(!is.na(simdat$doses[1:n, a]) & simdat$doses[1:n, a] %in% goodF )
 		
 	eout	
