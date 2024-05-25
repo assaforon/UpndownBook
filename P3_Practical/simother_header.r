@@ -126,7 +126,12 @@ if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 ests0 <- foreach(a = 1:nsim,  
 			.packages = c('cir','upndown','plyr') ) %dopar%  {
 	eout = data.frame(true = truth[a])
-	if(var(simdat$doses[1:n, a]) == 0) return(eout) # a dud run
+	
+### Number within a tolerance interval
+	goodF = which(simdat$scenarios[ ,a] >= target-halfwidth & simdat$scenarios[ ,a] <= target+halfwidth)
+	eout$ninterval = sum(!is.na(simdat$doses[1:n, a]) & simdat$doses[1:n, a] %in% goodF )
+	
+	if(var(simdat$doses[1:n, a]) == 0) return(eout) # a dud run, nothing else can be calculated
 
 ### isotonics
 	tmp1 = try(udest(simdat$doses[1:n, a], simdat$responses[1:n,a], target=target, 
@@ -139,11 +144,8 @@ ests0 <- foreach(a = 1:nsim,
 	conf = conf, adaptiveShrink = TRUE) )
 
 	eout$mtdest = ifelse( 'data.frame' %in% class(tmp2), tmp2$x[which.min(abs(tmp2$y-target))], NA)
-	
-### Est/number within a tolerance interval
-	goodF = which(simdat$scenarios[ ,a] >= target-halfwidth & simdat$scenarios[ ,a] <= target+halfwidth)
+### Est within a tolerance interval
 	eout$goodest = (eout$mtdest %in% goodF)
-	eout$ninterval = sum(!is.na(simdat$doses[1:n, a]) & simdat$doses[1:n, a] %in% goodF )
 		
 	eout	
 }
@@ -185,17 +187,19 @@ if(length(truth) != nsim) stop('Mistmatch in length of true values.\n')
 ests0 <- foreach(a = 1:nsim,  
 			.packages = c('dfcrm','plyr') ) %dopar%  {
 	eout = data.frame(true = truth[a])
+	
+### Number within a tolerance interval
+	goodF = which(simdat$scenarios[ ,a] >= target-halfwidth & simdat$scenarios[ ,a] <= target+halfwidth)
+	eout$ninterval = sum(!is.na(simdat$doses[1:n, a]) & simdat$doses[1:n, a] %in% goodF )
+
 	if(var(simdat$doses[1:n, a]) == 0) return(eout) # a dud run, will trigger errors if attempted
 
 	tmp = crm(prior=skel, target=target, level=simdat$doses[1:n, a], tox=simdat$responses[ , a])
 	eout$pointest = approx(tmp$ptox, 1:M, xout = target)$y 
 	eout$mtdest = which.min(abs(tmp$ptox - target) )
 	eout$thetahat = tmp$estimate
-	
-### Est/number within a tolerance interval
-	goodF = which(simdat$scenarios[ ,a] >= target-halfwidth & simdat$scenarios[ ,a] <= target+halfwidth)
+### Est within a tolerance interval
 	eout$goodest = (eout$mtdest %in% goodF)
-	eout$ninterval = sum(!is.na(simdat$doses[1:n, a]) & simdat$doses[1:n, a] %in% goodF )
 		
 	eout	
 }

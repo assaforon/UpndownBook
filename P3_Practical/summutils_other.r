@@ -21,15 +21,18 @@ return(dout)
 
 ### Extracting a ensemble data from name, and adding names as variable
 
-dextract <- function(dname, cuechar = 'w')
+dextract <- function(dname, cuechar1 = 'w', cuechar2 = 0)
 {
 require(stringr)
 require(data.table)
 
 dout = get(dname)
 dout[ , Framework := gsub('rest', '', dname) ]
-dout[ , des := tstrsplit(Framework, split = cuechar)[[1]] ]
+dout[ , des := tstrsplit(Framework, split = cuechar1)[[1]] ]
 dout[ , des := str_trim(paste(des, gsub('[a-z]', '', str_sub(Framework, -5)) ) ) ]
+dout[ , sett := tstrsplit(Framework, split = cuechar2)[[2]] ]
+dout[ , sett := gsub('[0-9]', '', sett) ]
+dout[ , sett := gsub('[_]', '', sett) ]
 
 dout
 }

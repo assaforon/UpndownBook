@@ -33,14 +33,14 @@ p30main = distill(all30w)
 p30main[ , Design := mapvalues(des, sort(unique(des)), names7) ]
 
 p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors7) +
-		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Good Window' (%)") + ylim(50, 89) + xlim(20,35) +
+		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Therapeutic Window' (%)") + ylim(50, 89) + xlim(20,35) +
 		geom_vline(xintercept = 30, lty = 2)
 
 p90main = distill(all90w)
 p90main[ , Design := mapvalues(des, sort(unique(des)), names6) ]
 
 p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors6) +
-		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Good Window' (%)") + ylim(50, 89) + xlim(65,95) +
+		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
 		geom_vline(xintercept = 90, lty = 2)
 
 ggsave(p1_30, file = file.path(outdir, 'othsim_main30.pdf'), width = wid1, height = hgt1)
@@ -54,5 +54,9 @@ e30w = e30w[grepl(30, e30w) & !grepl('4[_]05', e30w) & !grepl('boin', e30w) & !g
 e30combo = rbindlist(lapply(e30w, dextract), fill = TRUE)
 e30combo[ , Design := mapvalues(des, sort(unique(des)), names7[c(2,3,5:7)] ) ]
 
-ggplot(e30combo, aes(ninterval)) + geom_histogram() + facet_grid(
+e30combo[ , Setting := mapvalues(sett, c('minlo', 'minmid', 'minhi'), paste(c('Lower', 'Mid', 'Upper'), 'Target') ) ]
 
+phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram(fill='darkcyan') + facet_grid(Design ~ Setting) +
+				labs(x = "Number Treated in 'Therapeutic Window'", y = "Number of Runs")
+
+ggsave(phist, file = file.path(outdir, 'othsim_hist30.pdf'), width = wid1, height = hgt1 * 1.4)
