@@ -187,9 +187,10 @@ ests0 <- foreach(a = 1:nsim,
 	eout = data.frame(true = truth[a])
 	if(var(simdat$doses[1:n, a]) == 0) return(eout) # a dud run, will trigger errors if attempted
 
-	tmp = crm(prior=skel, target=target, level=simdat$doses[1:n, a], tox=simdat$responses[ , a])$ptox
-	eout$pointest = approx(tmp, 1:M, xout = target)$y 
-	eout$mtdest = which.min(abs(tmp-target))
+	tmp = crm(prior=skel, target=target, level=simdat$doses[1:n, a], tox=simdat$responses[ , a])
+	eout$pointest = approx(tmp$ptox, 1:M, xout = target)$y 
+	eout$mtdest = which.min(abs(tmp$ptox - target) )
+	eout$thetahat = tmp$estimate
 	
 ### Est/number within a tolerance interval
 	goodF = which(simdat$scenarios[ ,a] >= target-halfwidth & simdat$scenarios[ ,a] <= target+halfwidth)

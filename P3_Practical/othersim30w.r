@@ -42,7 +42,7 @@ k30list = list(k=2, lowTarget=TRUE, fastStart=TRUE)
 skel4_10 = getprior(halfwidth = 0.1, target = targ0, nu = 4, nlevel = M)
 skel4_05 = getprior(halfwidth = 0.05, target = targ0, nu = 4, nlevel = M)
 skel2_05 = getprior(halfwidth = 0.05, target = targ0, nu = 2, nlevel = M)
-skel6_05 = getprior(halfwidth = 0.05, target = targ0, nu = 6, nlevel = M)
+skel7_05 = getprior(halfwidth = 0.05, target = targ0, nu = 7, nlevel = M)
 
 boin10list = list(lookup = get.boundary(target=targ0,ncohort=30,cohortsize=1)$boundary_tab)
 ccd10list = list(hwidth=0.1, targ=targ0)
@@ -101,9 +101,9 @@ restcrmw30minmid4_05 = crmbatch(crmw30minmid4_05, truth=truew30, target=targ0, h
 crmw30minmid2_05 = dfsim(n, starting = lostart, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
 						desArgs=list(skel = skel2_05, targ = targ0), thresholds = thresh30w)					
 restcrmw30minmid2_05 = crmbatch(crmw30minmid2_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel2_05)
-crmw30minmid6_05 = dfsim(n, starting = lostart, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
-						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
-restcrmw30minmid6_05 = crmbatch(crmw30minmid6_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel6_05)
+crmw30minmid7_05 = dfsim(n, starting = lostart, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel7_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minmid7_05 = crmbatch(crmw30minmid7_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel7_05)
 
 cat('minmid\n')	
 # Good pausing point to see the output of one framework 
@@ -132,9 +132,9 @@ restcrmw30midmid4_05 = crmbatch(crmw30midmid4_05, truth=truew30, target=targ0, h
 crmw30midmid2_05 = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
 						desArgs=list(skel = skel2_05, targ = targ0), thresholds = thresh30w)					
 restcrmw30midmid2_05 = crmbatch(crmw30midmid2_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel2_05)
-crmw30midmid6_05 = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
-						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
-restcrmw30midmid6_05 = crmbatch(crmw30midmid6_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel6_05)
+crmw30midmid7_05 = dfsim(n, starting = M/2, Fvals=weib30F, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel7_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30midmid7_05 = crmbatch(crmw30midmid7_05, truth=truew30, target=targ0, halfwidth = 0.1, skel = skel7_05)
 
 cat('midmid\n')
 	
@@ -160,9 +160,9 @@ restcrmw30minhi4_05 = crmbatch(crmw30minhi4_05, truth=truew30u, target=targ0, ha
 crmw30minhi2_05 = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design=wrapCRM,
 						desArgs=list(skel = skel2_05, targ = targ0), thresholds = thresh30w)					
 restcrmw30minhi2_05 = crmbatch(crmw30minhi2_05, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel2_05)
-crmw30minhi6_05 = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design=wrapCRM,
-						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
-restcrmw30minhi6_05 = crmbatch(crmw30minhi6_05, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel6_05)
+crmw30minhi7_05 = dfsim(n, starting = lostart, Fvals=weib30Fu, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel7_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minhi7_05 = crmbatch(crmw30minhi7_05, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel7_05)
 
 cat('minhi\n')	
 
@@ -188,9 +188,9 @@ restcrmw30minlo4_05 = crmbatch(crmw30minlo4_05, truth=truew30l, target=targ0, ha
 crmw30minlo2_05 = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design=wrapCRM,
 						desArgs=list(skel = skel2_05, targ = targ0), thresholds = thresh30w)					
 restcrmw30minlo2_05 = crmbatch(crmw30minlo2_05, truth=truew30l, target=targ0, halfwidth = 0.1, skel = skel2_05)
-crmw30minlo6_05 = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design=wrapCRM,
-						desArgs=list(skel = skel6_05, targ = targ0), thresholds = thresh30w)					
-restcrmw30minlo6_05 = crmbatch(crmw30minlo6_05, truth=truew30l, target=targ0, halfwidth = 0.1, skel = skel6_05)
+crmw30minlo7_05 = dfsim(n, starting = lostart, Fvals=weib30Fl, ensemble=nsim, design=wrapCRM,
+						desArgs=list(skel = skel7_05, targ = targ0), thresholds = thresh30w)					
+restcrmw30minlo7_05 = crmbatch(crmw30minlo7_05, truth=truew30l, target=targ0, halfwidth = 0.1, skel = skel7_05)
 
 save.image(file.path(outdir, 'othersim30w.RData'))					
 cat('Done.\n')					

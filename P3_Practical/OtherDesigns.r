@@ -12,9 +12,10 @@ wrapCRM <- function(doses, responses, skel, targ, pace=1, goodm=TRUE, goodmDown=
 # ...: passed on to dfcrm::crm(). In particular, the scale argument controls the prior distribution's SD.
 {
 require(dfcrm)
-tmpp = crm(prior=skel, target=targ, tox=responses, level=doses, var.est=FALSE, patient.detail=FALSE, model.detail=FALSE)
 currdose = doses[length(doses)]
-
+tmpp = try(crm(prior=skel, target=targ, tox=responses, level=doses, var.est=FALSE, patient.detail=FALSE, model.detail=FALSE) )
+# If non-integrable, just continue current dose
+if(class(tmpp) == 'try-error') return(currdose)
 # Goodman et al. escalation constraint
 if (goodm) cand=min(tmpp$mtd,currdose+1)  
 # Also in the down direction...
