@@ -6,7 +6,7 @@ outdir = '../../output'
 
 library(plyr)
 library(ggplot2)
-theme_set(theme_bw(20)) 
+theme_set(theme_bw(19)) 
 #library(patchwork)
 
 load(file.path(outdir, 'othersim30w.RData'))	
@@ -31,15 +31,19 @@ source('summutils_other.r')
 
 p30main = distill(all30w)
 p30main[ , Design := mapvalues(des, sort(unique(des)), names7) ]
+# Removing the "boring" CRM option
+p30main = p30main[!grepl('Med', Design), ]
 
-p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors7) +
-		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Therapeutic Window' (%)") + ylim(50, 89) + xlim(20,35) +
+p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors7[-5]) +
+		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + ylim(60, 80) + xlim(20,35) +
 		geom_vline(xintercept = 30, lty = 2)
 
 p90main = distill(all90w)
 p90main[ , Design := mapvalues(des, sort(unique(des)), names6) ]
+# Removing the "boring" CRM option
+p90main = p90main[!grepl('Med', Design), ]
 
-p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors6) +
+p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors6[-4]) +
 		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
 		geom_vline(xintercept = 90, lty = 2)
 
@@ -57,6 +61,7 @@ e30combo[ , Design := mapvalues(des, sort(unique(des)), names7[c(2,3,5:7)] ) ]
 e30combo[ , Setting := mapvalues(sett, c('minlo', 'minmid', 'minhi'), paste(c('Lower', 'Mid', 'Upper'), 'Target') ) ]
 
 phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram(fill='darkcyan') + facet_grid(Design ~ Setting) +
-				labs(x = "Number Treated in 'Therapeutic Window'", y = "Number of Runs")
+				labs(x = "Patients Treated in 'Acceptable Window'", y = "Number of Runs") 
+				# + scale_x_continuous(limits=c(-1,31), expand = c(0,0))
 
 ggsave(phist, file = file.path(outdir, 'othsim_hist30.pdf'), width = wid1, height = hgt1 * 1.4)

@@ -46,7 +46,7 @@ skel03_025 = getprior(halfwidth = 0.025, target = targ0, nu = 3, nlevel = M)
 skel07_05 = getprior(halfwidth = 0.05, target = targ0, nu = 7, nlevel = M)
 skel07_025 = getprior(halfwidth = 0.025, target = targ0, nu = 7, nlevel = M)
 
-ccd10list = list(hwidth=0.05, targ=targ0)
+ccd90list = list(hwidth=0.05, targ=targ0)
 
 
 # Generate the scenarios on the dose grid
@@ -88,7 +88,7 @@ kw90himid = dfsim(n, starting = histart, Fvals=weib90F, ensemble=nsim,
 restkw90himid = restbatch(kw90himid, truth=truew90, target=targ0, bpt=ktarg90, halfwidth = goodint)
 
 ccdw90himid = dfsim(n, starting = histart, Fvals=weib90F, ensemble=nsim, design = ccd,
-						desArgs=ccd10list, thresholds = thresh90w)					
+						desArgs=ccd90list, thresholds = thresh90w)					
 restccdw90himid = restbatch(ccdw90himid, truth=truew90, target=targ0, halfwidth = goodint)
 				
 crmw90himid10_025 = dfsim(n, starting = histart, Fvals=weib90F, ensemble=nsim, design=wrapCRM,
@@ -114,7 +114,7 @@ kw90midmid = dfsim(n, starting = M/2, Fvals=weib90F, ensemble=nsim,
 restkw90midmid = restbatch(kw90midmid, truth=truew90, target=targ0, bpt=ktarg90, halfwidth = goodint)
 
 ccdw90midmid = dfsim(n, starting = M/2, Fvals=weib90F, ensemble=nsim, design = ccd,
-						desArgs=ccd10list, thresholds = thresh90w)					
+						desArgs=ccd90list, thresholds = thresh90w)					
 restccdw90midmid = restbatch(ccdw90midmid, truth=truew90, target=targ0, halfwidth = goodint)
 
 crmw90midmid10_025 = dfsim(n, starting = M/2, Fvals=weib90F, ensemble=nsim, design=wrapCRM,
@@ -137,7 +137,7 @@ kw90minhi = dfsim(n, starting = 1, Fvals=weib90Fu, ensemble=nsim,
 restkw90minhi = restbatch(kw90minhi, truth=truew90u, target=targ0, bpt=ktarg90, halfwidth = goodint)
 
 ccdw90minhi = dfsim(n, starting = 1, Fvals=weib90Fu, ensemble=nsim, design = ccd,
-						desArgs=ccd10list, thresholds = thresh90w)					
+						desArgs=ccd90list, thresholds = thresh90w)					
 restccdw90minhi = restbatch(ccdw90minhi, truth=truew90u, target=targ0, halfwidth = goodint)
 				
 crmw90minhi10_025 = dfsim(n, starting = 1, Fvals=weib90Fu, ensemble=nsim, design=wrapCRM,
@@ -160,7 +160,7 @@ kw90lomid = dfsim(n, starting = lostart, Fvals=weib90F, ensemble=nsim,
 restkw90lomid = restbatch(kw90lomid, truth=truew90, target=targ0, bpt=ktarg90, halfwidth = goodint)
 
 ccdw90lomid = dfsim(n, starting = lostart, Fvals=weib90F, ensemble=nsim, design = ccd,
-						desArgs=ccd10list, thresholds = thresh90w)					
+						desArgs=ccd90list, thresholds = thresh90w)					
 restccdw90lomid = restbatch(ccdw90lomid, truth=truew90, target=targ0, halfwidth = goodint)
 
 crmw90lomid10_025 = dfsim(n, starting = lostart, Fvals=weib90F, ensemble=nsim, design=wrapCRM,
