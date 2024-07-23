@@ -19,11 +19,11 @@ all90w = ls(pat='w90[lmh][eio]')
 wid1 = 9
 hgt1 = 9
 
-colors7 = c('orange', 'gold', 'turquoise4', 'turquoise1',  'turquoise3', 'blue', 'firebrick')
-names7 = c('BOIN', 'CCD', paste('CRM', c('Low', 'Med', 'Wide', 'High')), 'K-Row')
-colors6 = c('gold', 'turquoise4', 'turquoise1',  'turquoise3', 'blue', 'firebrick')
-names6 = c('CCD', paste('CRM', c('High', 'Wide', 'Low', 'Med')), 'K-Row')
-
+colors7 = c('orange', 'gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodgerblue',  'firebrick')
+names7 = c('BOIN', 'CCD', paste('CRM', c('Low', 'Med', 'Wide', 'High')), 'UDD (k=2)')
+colors6 = c('gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodgerblue', 'firebrick')
+names6 = c('CCD', paste('CRM', c('High', 'Wide', 'Low', 'Med')), 'UDD (k=6)')
+psize = 5
 
 source('summutils_other.r')
 
@@ -34,7 +34,7 @@ p30main[ , Design := mapvalues(des, sort(unique(des)), names7) ]
 # Removing the "boring" CRM option
 p30main = p30main[!grepl('Med', Design), ]
 
-p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors7[-5]) +
+p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors7[-5]) +
 		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + ylim(60, 80) + xlim(20,35) +
 		geom_vline(xintercept = 30, lty = 2)
 
@@ -43,7 +43,7 @@ p90main[ , Design := mapvalues(des, sort(unique(des)), names6) ]
 # Removing the "boring" CRM option
 p90main = p90main[!grepl('Med', Design), ]
 
-p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=4) + scale_color_manual(values = colors6[-4]) +
+p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6[-4]) +
 		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
 		geom_vline(xintercept = 90, lty = 2)
 
