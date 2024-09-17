@@ -45,7 +45,6 @@ boin10list = list(lookup = get.boundary(target=targ0,ncohort=30,cohortsize=1)$bo
 ccd10list = list(hwidth=0.1, targ=targ0)
 
 # Up-and-downs!
-b30list = list(coin = 3/7, lowTarget = TRUE)
 g30list = list(s = csize, ll = 0, ul = 2)
 gtarg30 = g2targ(3,0,2)
 
@@ -81,10 +80,6 @@ thresh30w = matrix(runif(n*nsim), nrow=n)
 			
 #-------------------- simulation and estimation: Weibull	
 
-bw30minmid = dfsim(n, starting = lostart, cohort = csize, Fvals=weib30F, ensemble=nsim, design = bcd,
-						desArgs=b30list, thresholds = thresh30w)					
-restbw30minmid = restbatch(bw30minmid, truth=truew30, target=targ0, bpt=targ0, halfwidth = 0.1)
-
 gw30minmid = dfsim(n, starting = lostart, cohort = csize, Fvals=weib30F, ensemble=nsim, design = groupUD,
 						desArgs=g30list, thresholds = thresh30w)					
 restgw30minmid = restbatch(gw30minmid, truth=truew30, target=targ0, bpt=gtarg30, halfwidth = 0.1)
@@ -113,10 +108,6 @@ cat('minmid\n')
  
 # stop('ha')	
 
-bw30midmid = dfsim(n, starting = M/2, cohort = csize, Fvals=weib30F, ensemble=nsim, design = bcd,
-						desArgs=b30list, thresholds = thresh30w)					
-restbw30midmid = restbatch(bw30midmid, truth=truew30, target=targ0, bpt=targ0, halfwidth = 0.1)
-
 gw30midmid = dfsim(n, starting = M/2, cohort = csize, Fvals=weib30F, ensemble=nsim, design = groupUD,
 						desArgs=g30list, thresholds = thresh30w)					
 restgw30midmid = restbatch(gw30midmid, truth=truew30, target=targ0, bpt=gtarg30, halfwidth = 0.1)
@@ -142,10 +133,6 @@ restcrmw30midmid7_05 = crmbatch(crmw30midmid7_05, truth=truew30, target=targ0, h
 
 cat('midmid\n')
 	
-bw30minhi = dfsim(n, starting = 1, cohort = csize, Fvals=weib30Fu, ensemble=nsim, design = bcd,
-						desArgs=b30list, thresholds = thresh30w)					
-restbw30minhi = restbatch(bw30minhi, truth=truew30u, target=targ0, bpt=targ0, halfwidth = 0.1)
-
 gw30minhi = dfsim(n, starting = 1, cohort = csize, Fvals=weib30Fu, ensemble=nsim, design = groupUD,
 						desArgs=g30list, thresholds = thresh30w)					
 restgw30minhi = restbatch(gw30minhi, truth=truew30u, target=targ0, bpt=gtarg30, halfwidth = 0.1)
@@ -170,10 +157,6 @@ crmw30minhi7_05 = dfsim(n, starting = lostart, cohort = csize, Fvals=weib30Fu, e
 restcrmw30minhi7_05 = crmbatch(crmw30minhi7_05, truth=truew30u, target=targ0, halfwidth = 0.1, skel = skel7_05)
 
 cat('minhi\n')	
-
-bw30minlo = dfsim(n, starting = 1, cohort = csize, Fvals=weib30Fl, ensemble=nsim, design = bcd,
-						desArgs=b30list, thresholds = thresh30w)					
-restbw30minlo = restbatch(bw30minlo, truth=truew30l, target=targ0, bpt=targ0, halfwidth = 0.1)
 
 gw30minlo = dfsim(n, starting = 1, cohort = csize, Fvals=weib30Fl, ensemble=nsim, design = groupUD,
 						desArgs=g30list, thresholds = thresh30w)					

@@ -53,18 +53,28 @@ pm2_30 <- ggplot(p30summ2, aes(x, y, color = Design) ) + geom_pointrange(aes(ymi
 		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs that found the 'True MTD' (%)") + 
 		coord_cartesian(ylim = c(42.5, 57.5), xlim = c(20,35), expand = 0) + geom_vline(xintercept = 30, lty = 2)
 
-stop('hey!')
+#
 
 
-p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors7[-5]) +
-		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + ylim(60, 80) + xlim(20,35) +
-		geom_vline(xintercept = 30, lty = 2)
+#p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors7[-5]) +
+#		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + ylim(60, 80) + xlim(20,35) +
+#		geom_vline(xintercept = 30, lty = 2)
 
 p90main = distill(all90w)
+
+p90main = p90main[des != 'ccd', ]
 p90main[ , Design := mapvalues(des, sort(unique(des)), names6) ]
 # Removing the "boring" CRM option
 p90main = p90main[!grepl('Med', Design), ]
+p90summ = p90main[ , list(x = 100*mean(x), xmin = 100*min(x), xmax = 100*max(x), y = 100*mean(y), ymin = 100*min(y), ymax = 100*max(y) ), keyby = 'Design']
 
+pm_90 <- ggplot(p90summ, aes(x, y, color = Design) ) + geom_pointrange(aes(ymin=ymin, ymax=ymax), size=psize, lwd = lsize) + 
+		geom_linerange(aes(xmin=xmin, xmax=xmax), lwd=lsize ) + scale_color_manual(values = colors6[-4]) +
+		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)")   + 
+		coord_cartesian(ylim = c(50, 82), xlim = c(67,95), expand = 0) + geom_vline(xintercept = 90, lty = 2)
+
+
+stop('hey!')
 p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6[-4]) +
 		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
 		geom_vline(xintercept = 90, lty = 2)
