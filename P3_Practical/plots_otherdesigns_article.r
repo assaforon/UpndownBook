@@ -23,7 +23,8 @@ colors7 = c('orange', 'gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodger
 names7 = c('BOIN', 'CCD', paste('CRM', c('Low', 'Med', 'Wide', 'High')), 'UDD (k=2)')
 colors6 = c('gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodgerblue', 'firebrick')
 names6 = c('CCD', paste('CRM', c('High', 'Wide', 'Low', 'Med')), 'UDD (k=6)')
-psize = 5
+psize = 1.7
+lsize = 1.5
 
 source('summutils_other.r')
 
@@ -33,6 +34,27 @@ p30main = distill(all30w)
 p30main[ , Design := mapvalues(des, sort(unique(des)), names7) ]
 # Removing the "boring" CRM option
 p30main = p30main[!grepl('Med', Design), ]
+
+p30main2 = distill(all30w, yfun = function(x) sum(x$mtdest == x$mtd, na.rm = TRUE)/nrow(x) )
+p30main2[ , Design := mapvalues(des, sort(unique(des)), names7) ]
+p30main2 = p30main2[!grepl('Med', Design), ]
+
+p30summ = p30main[ , list(x = 100*mean(x), xmin = 100*min(x), xmax = 100*max(x), y = 100*mean(y), ymin = 100*min(y), ymax = 100*max(y) ), keyby = 'Design']
+p30summ2 = p30main2[ , list(x = 100*mean(x), xmin = 100*min(x), xmax = 100*max(x), y = 100*mean(y), ymin = 100*min(y), ymax = 100*max(y)), keyby = 'Design']
+
+
+pm_30 <- ggplot(p30summ, aes(x, y, color = Design) ) + geom_pointrange(aes(ymin=ymin, ymax=ymax), size=psize, lwd = lsize) + 
+		geom_linerange(aes(xmin=xmin, xmax=xmax), lwd=lsize ) + scale_color_manual(values = colors7[-5]) +
+		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + 
+		coord_cartesian(ylim = c(60, 75), xlim = c(20,35), expand = 0) + geom_vline(xintercept = 30, lty = 2)
+
+pm2_30 <- ggplot(p30summ2, aes(x, y, color = Design) ) + geom_pointrange(aes(ymin=ymin, ymax=ymax), size=psize, lwd = lsize) + 
+		geom_linerange(aes(xmin=xmin, xmax=xmax), lwd=lsize ) + scale_color_manual(values = colors7[-5]) +
+		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs that found the 'True MTD' (%)") + 
+		coord_cartesian(ylim = c(42.5, 57.5), xlim = c(20,35), expand = 0) + geom_vline(xintercept = 30, lty = 2)
+
+stop('hey!')
+
 
 p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors7[-5]) +
 		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + ylim(60, 80) + xlim(20,35) +

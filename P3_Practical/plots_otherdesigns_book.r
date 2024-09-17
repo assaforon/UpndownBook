@@ -26,7 +26,7 @@ hgt2 = 7
 
 colors6 = c(rep('grey75', 2), rep('grey50', 3), 'black')
 names6 = c('BOIN', 'CCD', paste('CRM', c('Low', 'Wide', 'High')), 'UDD (k=2)')
-shapes6 = c(18, 19, 18, 17, 15, 19)
+shapes6 = c(18, 15, 18, 17, 15, 19)
 #colors6 = c('gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodgerblue', 'firebrick')
 #names6 = c('CCD', paste('CRM', c('High', 'Wide', 'Low', 'Med')), 'UDD (k=6)')
 psize = 5
@@ -47,13 +47,16 @@ p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design, shape = Design) ) + g
 		geom_vline(xintercept = 30, lty = 2) + scale_shape_manual(values = shapes6)
 		
 p90main = distill(all90w)
-p90main[ , Design := mapvalues(des, sort(unique(des)), gsub(2, 6, names6[c(2, 5:3, 6) ]) ) ]
+p90main[ , Design := mapvalues(des, sort(unique(des)), gsub(2, 6, names6[c(2, 2, 5:3, 6) ]) ) ]
+p90main[des=='ccd', Design := 'CCD (0.09)' ]
+p90main[des=='ccd 2', Design := 'CCD (0.05)' ]
+
 # Removing the "boring" CRM option
 p90main = p90main[!grepl('Med', Design), ]
 
-p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design, shape = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6[-1]) +
+p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design, shape = Design) ) + geom_point(size=psize) + scale_color_manual(values = c(colors6[1], colors6[-1]) ) +
 		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
-		geom_vline(xintercept = 90, lty = 2) + scale_shape_manual(values = shapes6[-1])
+		geom_vline(xintercept = 90, lty = 2) + scale_shape_manual(values = shapes6[c(6, 2:6) ])
 
 ggsave(p1_30, file = file.path(outdir, 'othsim_main30_book.pdf'), width = wid1, height = hgt1)
 ggsave(p1_90, file = file.path(outdir, 'othsim_main90_book.pdf'), width = wid1, height = hgt1)
@@ -94,7 +97,9 @@ e90pcombo = rbindlist(lapply(e90w2, dextract), fill = TRUE)
 
 pmetrix90 = e90pcombo[ , list(RMSE = rmse(pointest, true, winsor = TRUE), MAE90 = mae(pointest, true),
 								Bias = bias(pointest, true)), keyby = .(des, sett)] 
-pmetrix90[ , Design := mapvalues(des, sort(unique(des)), gsub(2, 6, names6[c(2, 5:3, 6)] ) ) ]
+pmetrix90[ , Design := mapvalues(des, sort(unique(des)), gsub(2, 6, names6[c(2, 2, 5:3, 6) ]) ) ]
+pmetrix90[des=='ccd', Design := 'CCD (0.09)' ]
+pmetrix90[des=='ccd 2', Design := 'CCD (0.05)' ]
 
 cont30m = ggplot(pmetrix30, aes(Design, MAE90)) + geom_jitter(size = psize-1, width = jwid) + ylim(0,NA) + xlab('')
 cont30r = ggplot(pmetrix30, aes(Design, RMSE)) + geom_jitter(size = psize-1, width = jwid) + ylim(0,NA) + xlab('')
