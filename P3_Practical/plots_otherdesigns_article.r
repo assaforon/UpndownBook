@@ -16,15 +16,15 @@ all90w = ls(pat='w90[lmh][eio]')
 
 #### Constants
 
-wid1 = 9
+wid1 = 11
 hgt1 = 9
 
 colors7 = c('orange', 'gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodgerblue',  'firebrick')
 names7 = c('BOIN', 'CCD', paste('CRM', c('Low', 'Med', 'Wide', 'High')), 'UDD (k=2)')
 colors6 = c('gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodgerblue', 'firebrick')
 names6 = c('CCD', paste('CRM', c('High', 'Wide', 'Low', 'Med')), 'UDD (k=6)')
-psize = 1.7
-lsize = 1.5
+psize = 1.5
+lsize = 1.3
 
 source('summutils_other.r')
 
@@ -74,15 +74,21 @@ pm_90 <- ggplot(p90summ, aes(x, y, color = Design) ) + geom_pointrange(aes(ymin=
 		coord_cartesian(ylim = c(50, 82), xlim = c(67,95), expand = 0) + geom_vline(xintercept = 90, lty = 2)
 
 
-stop('hey!')
-p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6[-4]) +
-		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
-		geom_vline(xintercept = 90, lty = 2)
 
-ggsave(p1_30, file = file.path(outdir, 'othsim_main30.pdf'), width = wid1, height = hgt1)
-ggsave(p1_90, file = file.path(outdir, 'othsim_main90.pdf'), width = wid1, height = hgt1)
+# p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6[-4]) +
+		# labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
+		# geom_vline(xintercept = 90, lty = 2)
+
+ggsave(pm_30, file = file.path(outdir, 'othsim_main30_RnR.pdf'), width = wid1, height = hgt1)
+ggsave(pm2_30, file = file.path(outdir, 'othsim_mtd30_RnR.pdf'), width = wid1, height = hgt1)
+ggsave(pm_90, file = file.path(outdir, 'othsim_main90_RnR.pdf'), width = wid1, height = hgt1)
+
+# ggsave(p1_30, file = file.path(outdir, 'othsim_main30.pdf'), width = wid1, height = hgt1)
+# ggsave(p1_90, file = file.path(outdir, 'othsim_main90.pdf'), width = wid1, height = hgt1)
 
 #------------------------ "Number treated in window" histograms -----------------------#
+
+stop('Revision')
 
 e30w = ls(pat = 'rest[bck][crow]')
 e30w = e30w[grepl(30, e30w) & !grepl('4[_]05', e30w) & !grepl('boin', e30w) & !grepl('midmid', e30w) ]
