@@ -71,13 +71,19 @@ p90summ = p90main[ , list(x = 100*mean(x), xmin = 100*min(x), xmax = 100*max(x),
 pm_90 <- ggplot(p90summ, aes(x, y, color = Design) ) + geom_pointrange(aes(ymin=ymin, ymax=ymax), size=psize, lwd = lsize) + 
 		geom_linerange(aes(xmin=xmin, xmax=xmax), lwd=lsize ) + scale_color_manual(values = colors6[-4]) +
 		labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)")   + 
-		coord_cartesian(ylim = c(50, 82), xlim = c(67,95), expand = 0) + geom_vline(xintercept = 90, lty = 2)
+		coord_cartesian(ylim = c(58, 82), xlim = c(68,95), expand = 0) + geom_vline(xintercept = 90, lty = 2)
 
 
 
 # p1_90 <- ggplot(p90main, aes(100*x, 100*y, color = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6[-4]) +
 		# labs(x = "Ensemble-Mean Efficacy Rate (%)", y = "Runs with 'Best Dose' Estimate in 'Desirable Window' (%)") + ylim(50, 89) + xlim(65,95) +
 		# geom_vline(xintercept = 90, lty = 2)
+
+#### Saving
+
+fwrite(p30main, file = file.path(outdir, 'sim30summaries.csv') )
+fwrite(p30main2, file = file.path(outdir, 'sim30summaries_MTD.csv') )
+fwrite(p90main, file = file.path(outdir, 'sim90summaries.csv') )
 
 ggsave(pm_30, file = file.path(outdir, 'othsim_main30_RnR.pdf'), width = wid1, height = hgt1)
 ggsave(pm2_30, file = file.path(outdir, 'othsim_mtd30_RnR.pdf'), width = wid1, height = hgt1)
@@ -88,7 +94,7 @@ ggsave(pm_90, file = file.path(outdir, 'othsim_main90_RnR.pdf'), width = wid1, h
 
 #------------------------ "Number treated in window" histograms -----------------------#
 
-stop('Revision')
+#stop('Revision')
 
 e30w = ls(pat = 'rest[bck][crow]')
 e30w = e30w[grepl(30, e30w) & !grepl('4[_]05', e30w) & !grepl('boin', e30w) & !grepl('midmid', e30w) ]
@@ -98,7 +104,7 @@ e30combo[ , Design := mapvalues(des, sort(unique(des)), names7[c(2,3,5:7)] ) ]
 
 e30combo[ , Setting := mapvalues(sett, c('minlo', 'minmid', 'minhi'), paste(c('Lower', 'Mid', 'Upper'), 'Target') ) ]
 
-phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram(fill='darkcyan') + facet_grid(Design ~ Setting) +
+phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram(fill='steelblue2') + facet_grid(Design ~ Setting) +
 				labs(x = "Patients Treated in 'Acceptable Window'", y = "Number of Runs") 
 				# + scale_x_continuous(limits=c(-1,31), expand = c(0,0))
 

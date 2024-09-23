@@ -57,6 +57,10 @@ pm2_30 <- ggplot(p30summ2, aes(x, y, color = Design) ) + geom_pointrange(aes(ymi
 #		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + ylim(60, 80) + xlim(20,35) +
 #		geom_vline(xintercept = 30, lty = 2)
 
+#### Saving
+
+fwrite(p30main, file = file.path(outdir, 'sim30summaries_cohort.csv') )
+fwrite(p30main2, file = file.path(outdir, 'sim30summaries_MTD_cohort.csv') )
 
 ggsave(pm_30, file = file.path(outdir, 'othsim_main30_cohort.pdf'), width = wid1, height = hgt1)
 ggsave(pm_30_0, file = file.path(outdir, 'othsim_main30_cohort_freelims.pdf'), width = wid1, height = hgt1)
@@ -73,7 +77,7 @@ e30combo[ , Design := mapvalues(des, sort(unique(des)), names6[-1] ) ]
 
 e30combo[ , Setting := mapvalues(sett, c('minlo', 'minmid', 'minhi'), paste(c('Lower', 'Mid', 'Upper'), 'Target') ) ]
 
-phist <- ggplot(e30combo, aes(ninterval/3)) + geom_histogram(fill='steelblue2', bins = 10) + facet_grid(Design ~ Setting) +
+phist <- ggplot(e30combo, aes(ninterval/3)) + geom_histogram(fill='steelblue2', bins = 11) + facet_grid(Design ~ Setting) +
 				labs(x = "Cohorts Treated in 'Acceptable Window'", y = "Number of Runs") + scale_x_continuous(breaks = seq(0,10,2))
 				# + scale_x_continuous(limits=c(-1,31), expand = c(0,0))
 
