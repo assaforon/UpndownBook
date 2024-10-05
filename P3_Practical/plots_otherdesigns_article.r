@@ -104,7 +104,7 @@ e30combo[ , Design := mapvalues(des, sort(unique(des)), names7[c(2,3,5:7)] ) ]
 
 e30combo[ , Setting := mapvalues(sett, c('minlo', 'minmid', 'minhi'), paste(c('Lower', 'Mid', 'Upper'), 'Target') ) ]
 
-phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram(fill='steelblue2') + facet_grid(Design ~ Setting) +
+phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram(fill='steelblue2', bins = 31) + facet_grid(Design ~ Setting) +
 				labs(x = "Patients Treated in 'Acceptable Window'", y = "Number of Runs") 
 				# + scale_x_continuous(limits=c(-1,31), expand = c(0,0))
 
