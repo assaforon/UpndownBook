@@ -23,10 +23,11 @@ hgt2 = 7
 
 colors6 = c(rep('grey75', 2), rep('grey50', 3), 'black')
 names6 = c('BOIN', 'CCD', paste('CRM', c('Low', 'Wide', 'High')), 'UDD (k=2)')
-shapes6 = c(18, 19, 18, 17, 15, 19)
+shapes6 = c(18, 12, 25, 17, 15, 19)
 #colors6 = c('gold', 'turquoise4', 'turquoise1',  'turquoise3', 'dodgerblue', 'firebrick')
 #names6 = c('CCD', paste('CRM', c('High', 'Wide', 'Low', 'Med')), 'UDD (k=6)')
-psize = 5
+psize = 1.5
+lsize = 1.3
 
 source('summutils_other.r')
 
@@ -37,11 +38,24 @@ p30main[ , Design := mapvalues(des, sort(unique(des)), names6) ]
 # Removing the "boring" CRM option
 p30main = p30main[!grepl('Med', Design), ]
 
-p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design, shape = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6) +
-		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") +  ylim(72, 85) + xlim(22,34) +
-		geom_vline(xintercept = 30, lty = 2) + scale_shape_manual(values = shapes6)
+p30summ = p30main[ , list(x = 100*mean(x), xmin = 100*min(x), xmax = 100*max(x), y = 100*mean(y), ymin = 100*min(y), ymax = 100*max(y) ), keyby = 'Design']
+
+
+pm_30 <- ggplot(p30summ, aes(x, y, color = Design, shape = Design, fill = Design) ) + 
+		geom_pointrange(aes(ymin=ymin, ymax=ymax), size=psize, lwd = lsize) + scale_shape_manual(values = shapes6) +
+		geom_linerange(aes(xmin=xmin, xmax=xmax), lwd=lsize ) + scale_color_manual(values = colors6) +
+		labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") + 
+		scale_x_continuous(breaks = c(25, 30) ) + scale_y_continuous(breaks = c(75, 80, 85) ) +
+		coord_cartesian(ylim = c(74, 85), xlim = c(23,33), expand = 0) + geom_vline(xintercept = 30, lty = 2) +
+		scale_fill_manual(values = colors6) 
+
+
+# p1_30 <- ggplot(p30main, aes(100*x, 100*y, color = Design, shape = Design) ) + geom_point(size=psize) + scale_color_manual(values = colors6) +
+		# labs(x = "Ensemble-Mean DLT Rate (%)", y = "Runs with MTD Estimate in 'Acceptable Window' (%)") +  ylim(72, 85) + xlim(22,34) +
+		# geom_vline(xintercept = 30, lty = 2) + scale_shape_manual(values = shapes6)
 		
-ggsave(p1_30, file = file.path(outdir, 'othsim_main30_n60_book.pdf'), width = wid1, height = hgt1)
+ggsave(pm_30, file = file.path(outdir, 'othsim_main30_n60_book.pdf'), width = wid1, height = hgt1)
+# stop('enuff')
 
 #------------------------ "Number treated in window" histograms -----------------------#
 
@@ -53,7 +67,7 @@ e30combo[ , Design := p30main$Design[match(des,p30main$des)]  ]
 
 e30combo[ , Setting := mapvalues(sett, c('minlo', 'minmid', 'minhi'), paste(c('Lower', 'Mid', 'Upper'), 'Target') ) ]
 
-phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram() + facet_grid(Design ~ Setting) +
+phist <- ggplot(e30combo, aes(ninterval)) + geom_histogram(bins = 31) + facet_grid(Design ~ Setting) +
 				labs(x = "Patients Treated in 'Acceptable Window'", y = "Number of Runs") 
 				# + scale_x_continuous(limits=c(-1,31), expand = c(0,0))
 
