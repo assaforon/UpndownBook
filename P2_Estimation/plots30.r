@@ -44,7 +44,7 @@ pdf(file.path(outdir, 'sim_scatter30n2.pdf'), width = 10, height = 5.5)
 estscatter(rbind(estkw30midmid,estkw30minhi,estkw30minlo), size=.4)
 dev.off()
 
-stop('scat!')
+# stop('scat!')
 
 #-------- Plots: point, n=30
 
