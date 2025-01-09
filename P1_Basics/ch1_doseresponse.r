@@ -13,8 +13,8 @@ plot(expandedX, plogis(expandedX, location = exampleMu, scale = exampleSig), typ
 csize = 12
 cchar = 21
 				
-points(qlogis(0.3, , location = exampleMu, scale = exampleSig), 0.3, pch = cchar, cex = csize, col = 'white', bg = 'gray90')
-points(qlogis(0.8, , location = exampleMu, scale = exampleSig), 0.8, pch = cchar, cex = csize, col = 'white', bg = 'gray40')
+points(qlogis(0.3, location = exampleMu, scale = exampleSig), 0.3, pch = cchar, cex = csize, col = 'white', bg = 'gray90')
+points(qlogis(0.8, location = exampleMu, scale = exampleSig), 0.8, pch = cchar, cex = csize, col = 'white', bg = 'gray40')
 
 points(exampleMu, 0.5, pch = cchar, cex = csize, col = 'white', bg = 'gray70')
 
