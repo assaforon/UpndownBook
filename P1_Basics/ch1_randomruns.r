@@ -15,16 +15,26 @@ classic = dfsim(n = n, starting = M/2, Fvals = exampleF, ensemble = nsim,
 p80 = dfsim(n = n, starting = M/2, Fvals = exampleF, ensemble = nsim, 
 	design = krow, desArgs = list(k=3, lowTarget = FALSE), thresholds = thresh )
 p30 = dfsim(n = n, starting = M/2, Fvals = exampleF, ensemble = nsim, 
-	design = bcd, desArgs = list(k=3, coin = 3/7, lowTarget = TRUE), thresholds = thresh )
+	design = bcd, desArgs = list(coin = 3/7, lowTarget = TRUE), thresholds = thresh )
+
+# Group UD
+ngroup = 3 * (n %/% 3)
+p30g = dfsim(n = ngroup, starting = 1, cohort = 3, Fvals = exampleF, ensemble = nsim, 
+	design = groupUD, desArgs = list(s = 3, ll = 0, ul = 2), thresholds = thresh )
 	
 # Targets for showing on the plots
 t50 = qlogis(0.5, location = exampleMu, scale = exampleSig)
-t80 = qlogis(k2targ(3, lowTarget = FALSE), location = exampleMu, scale = exampleSig)
+t80 = qlogis(0.8, location = exampleMu, scale = exampleSig)
+# k-row Balance point:
+bp80 = qlogis(k2targ(3, lowTarget = FALSE), location = exampleMu, scale = exampleSig)
 t30 = qlogis(0.3, location = exampleMu, scale = exampleSig)
+# GUD Balance point:
+bp30 = qlogis(g2targ(cohort = 3, lower = 0, upper = 2), location = exampleMu, scale = exampleSig)
 
-# Plotting
+### Plotting: first plot (3 single-obs designs)
 
-hstyle = 3
+hstyle = 2
+bpstyle = 3
 psize = 1.4
 shp = 'square'
 
@@ -42,11 +52,30 @@ for(a in 1:nsim)
 	axis(2, 1:M); abline(h = t50, lty = hstyle, lwd = 1.5)
 	udplot(p80$doses[ ,a], p80$responses[ ,a], allow1extra = TRUE, ylim = c(1, M), 
 		cex = psize, yaxt = 'n', xtitle = '', ytitle = yl, shape = shp, main = 'K-in-a-row' )
-	axis(2, 1:M); abline(h = t80, lty = hstyle, lwd = 1.5)
+	axis(2, 1:M)
+	abline(h = t80, lty = hstyle, lwd = 1.5)
+	abline(h = bp80, lty = bpstyle)
 	par(mar = c(4,lmar,4.,1.) )
 	udplot(p30$doses[ ,a], p30$responses[ ,a], allow1extra = TRUE, ylim = c(1, M), 
 		cex = psize, yaxt = 'n', ytitle = yl, shape = shp, main = 'Biased-Coin')
 	axis(2, 1:M); abline(h = t30, lty = hstyle, lwd = 1.5)
+}
+
+dev.off()
+
+### Plotting: second plot (GUD_{3,0,2})
+
+pdf(file.path(outdir, 'ch1_GUDruns.pdf'), width = 12, height = 4.5)
+layout(t(1:3))
+par(mar = c(3.5,3.5,4,1), mgp = c(2.2, 0.6, 0), tck = -0.01, las = 1, cex.lab = 1.8, cex.axis = 1.5, cex.main = 2)
+
+for(a in 1:nsim)
+{
+	plot(DRtrace(x = p30g$doses[1:ngroup, a], y = p30g$responses[ ,a], cohort = 3), ylim = c(1, M), # cex = psize,
+		 yaxt = 'n', ylab = 'Dose-Level', shape = shp, main = 'Group UD' )
+	axis(2, 1:M) 
+	abline(h = t30, lty = hstyle, lwd = 1.5)
+	abline(h = bp30, lty = bpstyle)
 }
 
 dev.off()
