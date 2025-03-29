@@ -8,8 +8,7 @@ btarg = 0.3
 pdf(file.path(outdir, 'ch2_balancept.pdf'), width = 14, height = 7.3)
 
 layout(t(1:2))
-
-par(mar = c(4,4,4,2), mgp = c(2.5, 0.6, 0), tck = -0.01, las = 1, cex.lab = 1.5, cex.axis = 1.2, cex.main = 1.7)
+par(stdpar)
 
 plot(finex, fineF, lty = 2, type = 'l', lwd = 2, xaxt = 'n', yaxt = 'n', 
 	main = 'Classical', xlab = 'Dose-Level', ylab = 'Transition Probability')

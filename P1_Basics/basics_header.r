@@ -14,5 +14,9 @@ exp11F = pexp(1:M, rate=1/11)
 
 outdir = '../../output'
 
+# "Typical" plotting parameters
+
+stdpar = par(mar = c(4,4,4,2), mgp = c(2.5, 0.6, 0), tck = -0.01, las = 1, cex.lab = 1.5, cex.axis = 1.2, cex.main = 1.7)
+
 
 
