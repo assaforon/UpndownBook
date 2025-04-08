@@ -5,6 +5,7 @@ source('basics_header.r')
 startdose = 2
 initvec = rep(0, M)
 initvec[startdose] = 1
+btarg = 0.3
 
 # Stationary distributions
 bpi = pivec(exampleF, bcdmat, target = btarg)
@@ -20,9 +21,11 @@ lines(exp11F, lty=2, lwd=2)
 abline(h = 0.3, lty = 3)
 axis(1, at = 1:M)
 
-plot(100 * bpi, type = 'l', lwd=2, xaxt = 'n', xlab = 'Dose-Level', ylab = 'Allocation Probability (%)', ylim = c(1, 27) )
+plot(100 * bpi, type = 'l', lwd=2, xaxt = 'n', xlab = 'Dose-Level', 
+		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ), ylim = c(1, 27) )
 lines(100 * ebpi, lty=2, lwd=2)
 axis(1, at = 1:M)
+legend('topright', legend = c('Logistic', 'Exponential'), lty = 1:2, lwd = 2, cex = 1.2, bty = 'n')
 
 dev.off()
 
@@ -80,11 +83,14 @@ ynums = sort(outer(c(1,3), 10^(0:4)) )
 yrange = c(1, 1e4)
 lvisit90[!is.finite(lvisit90)] = 2 * yrange[2]
 
-layout(t(1:2))
+pdf(file.path(outdir, 'ch3_bcd_visits.pdf'), width = 14, height = 7.3)
+
+layout(t(1:2), widths = 16:15)
 par(tck = -0.01, las = 1, cex.lab = 1.5, cex.axis = 1.2, cex.main = 1.7, mar = c(4.5,4.5,4,1), mgp = c(3,0.5,0) )
 
 # logistic
-plot(c(1,M), log10(yrange), type='n', xaxt='n', yaxt='n', main = 'First Visits, Logistic F(x)', xlab = 'Destination Dose-Level', ylab = 'Number of Steps Needed')
+plot(c(1,M), log10(yrange), type='n', xaxt='n', yaxt='n', main = expression(paste('First Visit from ', 
+					d[2], ', Logistic F(x)') ), xlab = 'Destination Dose-Level', ylab = 'Observations until First Visit')
 
 polygon(x=c(1:M, M:1), y=log10(c(lvisit90[1,], rev(lvisit90[2,]))), col=bands, border=bands)
 lines(1:M, log10(flij), lwd = 2)
@@ -94,7 +100,9 @@ axis(2, at = log10(ynums), labels = ynums)
 abline(v = 3.9, lty = 2)
 
 # exponential
-plot(c(1,M), log10(yrange), type='n', xaxt='n', yaxt='n', main = 'First Visits, Exponential F(x)', xlab = 'Destination Dose-Level', ylab = 'Number of Steps Needed')
+par(mar = c(4.5,3,4,1))
+plot(c(1,M), log10(yrange), type='n', xaxt='n', yaxt='n', main = expression(paste('First Visit from ', 
+					d[2], ', Exponential F(x)') ), xlab = 'Destination Dose-Level', ylab = '')
 
 polygon(x=c(1:M, M:1), y=log10(c(evisit90[1,], rev(evisit90[2,]))), col=bands, border=bands)
 lines(1:M, log10(feij), lwd = 2)
@@ -103,7 +111,7 @@ axis(1, 1:M)
 axis(2, at = log10(ynums), labels = ynums)
 abline(v = 3.9, lty = 2)
 
-
+dev.off()
 
 
 

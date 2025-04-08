@@ -42,14 +42,16 @@ visit90 = apply(firsts, 1, quantile, prob = c(1,19)/20, type = 6)
 
 ########## Plotting
 
-pdf(file.path(outdir, 'ch3_classic_visits.pdf'), width = 14, height = 7.3)
+yseq = seq(0,50,10)
 
-layout(t(1:2))
-par(tck = -0.01, las = 1, cex.lab = 1.5, cex.axis = 1.2, cex.main = 1.7, mar = c(4.,4.5,4,1), mgp = c(2.5,0.5,0) )
+pdf(file.path(outdir, 'ch3_classic_visits.pdf'), width = 17, height = 6)
+
+layout(t(1:3))
+par(tck = -0.01, las = 1, cex.lab = 2, cex.axis = 1.7, cex.main = 2.5, mar = c(4.,4.5,4,1), mgp = c(3,0.5,0) )
 
 # Distribution
 plot(c(1,M), log10(c(1,1500)), type='n', xaxt='n', yaxt='n', main = expression(paste('First Visit from ', 
-					d[2], ': Mean and Uncertainty') ), xlab = 'Destination Dose-Level', ylab = 'Number of Steps Needed')
+					d[2], ': Mean and Uncertainty') ), xlab = 'Destination Dose-Level', ylab = 'Observations until First Visit')
 
 polygon(x=c(1:M, M:1), y=log10(c(visit90[1,], rev(visit90[2,]))), col='grey85', border='grey85')
 lines(1:M, log10(fij), lwd = 2)
@@ -60,11 +62,28 @@ axis(2, at = log10(ynums), labels = ynums)
 
 abline(v = 5.6, lty = 2)
 
+# Demo of distribution from d_2 to d_6, well-behaved
+
+plot(table(firsts[6,]),xaxt='n', yaxt='n', main = expression(paste('First Visit from ', 
+					d[2], ' to ', d[6], ': Full Distribution' ) ), xlab = 'Observations until First Visit', 
+					ylab = paste('Percent of Simulated Experiments'), xlim = c(4,35))
+axis(1, at=seq(5,40,5) )
+axis(2, at=yseq, labels = yseq/2)
+abline(v=fij[6], lty = 2)
+abline(v=mean(firsts[6,]), lty = 3)
+
+legend('topright', legend = paste(c('Theoretical', 'Simulation'), 'Mean'), lty = 2:3, bty = 'n', cex = 1.8)
+
 # Demo of distribution from d_2 to d_1, particularly skewed
 plot(table(firsts[1,]),xaxt='n', yaxt='n', main = expression(paste('First Visit from ', 
-					d[2], ' to ', d[1], ': Full Distribution' ) ), xlab = 'Number of Steps Needed ', 
-					ylab = paste('Percent of Simulated Experiments') )
+					d[2], ' to ', d[1], ': Full Distribution' ) ), xlab = 'Observations until First Visit', 
+					ylab = paste('Percent of Simulated Experiments'), ylim = c(0, 49) )
 axis(1, at=seq(0,3000,500) )
-axis(2, at=seq(0,36,6), labels = seq(0,36,6)/2)
+axis(2, at=yseq, labels = yseq/2)
+abline(v=fij[1], lty = 2)
+abline(v=mean(firsts[1,]), lty = 3)
+
+
+
 
 dev.off()
