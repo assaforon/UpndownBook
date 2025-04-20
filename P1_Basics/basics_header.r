@@ -9,6 +9,8 @@ M = 10
 
 # Logistic example used for most figures
 exampleF = plogis(1:M, location = exampleMu, scale = exampleSig)
+exampleF2 = plogis(1:(2*M), location = exampleMu, scale = exampleSig)
+
 # Exponential "counter-example" :)
 exp11F = pexp(1:M, rate=1/11)
 
