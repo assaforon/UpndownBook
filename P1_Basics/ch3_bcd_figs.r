@@ -26,6 +26,7 @@ plot(100 * bpi, type = 'l', lwd=2, xaxt = 'n', xlab = 'Dose-Level',
 lines(100 * ebpi, lty=2, lwd=2)
 axis(1, at = 1:M)
 legend('topright', legend = c('Logistic', 'Exponential'), lty = 1:2, lwd = 2, cex = 1.2, bty = 'n')
+abline(v = qlogis(0.3, location = exampleMu, scale = exampleSig), lty=3) 
 
 dev.off()
 

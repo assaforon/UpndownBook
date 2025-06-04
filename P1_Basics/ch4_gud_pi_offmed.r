@@ -10,7 +10,7 @@ g767pi = 100*pivec(exampleF2, gudmat, cohort=7, lower=6, upper=7)
 
 
 
-#pdf(file.path(outdir, 'ch4_gud_pi_offmed.pdf'), width = 14, height = 7.3)
+pdf(file.path(outdir, 'ch4_gud_pi_offmed.pdf'), width = 14, height = 7.3)
 layout(t(1:2))
 par(stdpar)
 
@@ -20,8 +20,10 @@ plot(g201pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, m
 		main = 'Targeting the 30th Percentile')
 lines(g302pi, lty = 2, lwd=wid)
 lines(g402pi, lty = 1, lwd=wid)
+legend('topright', legend = c('(2,0,1)', '(3,0,2)', '(4,0,2)'),lty = 3:1, lwd = 2,
+     bty = 'n', cex = 1.3)
 
-abline(v = qlogis(0.3, location = exampleMu, scale = exampleSig)) 
+abline(v = qlogis(0.3, location = exampleMu, scale = exampleSig), lty=3) 
 axis(1, 1:M)
 
 
@@ -30,11 +32,11 @@ plot(g545pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, m
 		, main = 'Targeting the 90th Percentile',  lty = 3, xlim = c(5, 16) )
 lines(g656pi, lty = 2, lwd=wid)
 lines(g767pi, lty = 1, lwd=wid)
-#legend('topright', legend = c('(5,2,3)', '(5,1,4)', '(5,0,5)'),lty = c(lines2,'solid'), lwd = 2,
-#     bty = 'n', cex = 1.3)
-abline(v = qlogis(0.9, location = exampleMu, scale = exampleSig), lty=2, lwd=wid) 
+legend('topright', legend = c('(5,4,5)', '(6,5,6)', '(7,6,7)'),lty = 3:1, lwd = 2,
+     bty = 'n', cex = 1.3)
+abline(v = qlogis(0.9, location = exampleMu, scale = exampleSig), lty=3) 
 
 axis(1, 1:(2*M) )
 
-#dev.off()
+dev.off()
 

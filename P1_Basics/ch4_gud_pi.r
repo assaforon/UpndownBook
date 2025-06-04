@@ -21,18 +21,18 @@ par(stdpar)
 lines1 = c('19', '27', '66', '93')
 lines2 = c('1955', '4694')
 # (K,0,K) family
-plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', 
+plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g505pi)),
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ), main = '(K,0,K) GUDs')
 lines(cpi, lty = lines1[1], lwd=wid)
 lines(g202pi, lty = lines1[2], lwd=wid)
 lines(g303pi, lty = lines1[3], lwd=wid)
 lines(g404pi, lty = lines1[4], lwd=wid)
-legend('topright', legend = c('Classical (K=1)', paste('K =', 2:5)), lty = c(lines1,'solid'), lwd = 2, 
+legend('topleft', legend = c('Classical (K=1)', paste('K =', 2:5)), lty = c(lines1,'solid'), lwd = 2, 
 		bty = 'n', cex = 1.3)
 axis(1, 1:M)
 
 
-plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', 
+plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g505pi)), 
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ),
 		, main = "Median-Targeting K=5 GUDs")
 lines(g514pi, lty = lines2[2], lwd=wid)
