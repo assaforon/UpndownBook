@@ -35,6 +35,11 @@ ggsave(p2, file = file.path(outdir, 'NEJarticle_alloc.pdf'), width = 8, height =
 # stop('vec')
 #--------------------- CIR plot
 
+# Data from George, R. B., et al. (2010). 
+# Up-down determination of the 90% effective dose of phenylephrine for the treatment of 
+# spinal anesthesia-induced hypotension in parturients undergoing cesarean delivery. 
+# Anesthesia & Analgesia 110(1) 154–158.
+
 dlabel = expression(paste('Phenylephrine dose (', mu, 'g)' ) )
 george10x = 80 + 20 * c(1, rep(2, 5), 1, 1, 0, 0, rep(1, 7), 0:2, 2, 2, rep(1, 4), 2, 1, 1, 2, 2, 
                         rep(3, 5), 4, 5, 5, rep(4, 6))

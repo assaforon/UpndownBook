@@ -1,3 +1,5 @@
+### Producing dataset of GUD targets for use in figure that maps them on the (0,1) vs. cohort-size plot
+
 source('basics_header.r')
 library(data.table)
 library(ggplot2)
