@@ -17,7 +17,7 @@ plot(g201pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, m
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ), lty = 2,
 		main = expression(paste(KRD[1/2],'     (F* = 0.293)') ), xlim = c(1, 9) )
 lines(k12pi, lty = 1, lwd=wid)
-legend('topright', legend = c('KRD', 'GUD / Arrivals', 'x*'),lty = 1:3, lwd = c(wid, wid, 1),
+legend('topright', legend = c('KRD', 'GUD / Arrivals'),lty = 1:2, lwd = wid,
      bty = 'n', cex = 1.3)
 
 abline(v = qlogis(k2targ(2, lowTarget = TRUE), location = exampleMu, scale = exampleSig), lty=3) 
@@ -28,7 +28,7 @@ plot(g323pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, m
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ),
 		, main = expression(paste(KRD[3/1],'     (F* = 0.794)') ),  lty = 2, xlim = c(3, 14) )
 lines(k31pi, lty = 1, lwd=wid)
-legend('topright', legend = c('KRD', 'GUD / Arrivals', 'x*'),lty = 1:3, lwd = c(wid, wid, 1),
+legend('topright', legend = c('KRD', 'GUD / Arrivals'),lty = 1:2, lwd = wid,
      bty = 'n', cex = 1.3)
 abline(v = qlogis(k2targ(3, lowTarget = FALSE), location = exampleMu, scale = exampleSig), lty=3) 
 
