@@ -32,6 +32,7 @@ par(mfrow=2:1, mar=c(4,4,1,1), mgp=c(2.5,0.8,0), cex.axis = 0.8, las = 1)
 udplot(van08x, van08y, xtitle = "Patient Number", ytitle = 'Gabapentin (mg/kg)' )
 
 drplot(van08x, van08y, addcurve = TRUE, addest = TRUE, target = 0.5,
+		curvecol = 'black', estcol = 'black',
 		percents = TRUE, xtitle = 'Gabapentin (mg/kg)', ytitle = "Percent Effective")
 
 van08IR = oldPAVA(van08dr, full = TRUE)
