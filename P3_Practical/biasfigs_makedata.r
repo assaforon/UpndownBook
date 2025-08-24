@@ -20,7 +20,7 @@ nsim = 1000
 logi50F = logi50parm[1:nsim, ][ ,as.vector(plogis(1:M, location=loc, scale=scal)), 
 					by = 'row0'] %$% matrix(V1, nrow = M)
 thresh50l = matrix(runif(n*nsim), nrow=n)
-thresh50l_long = matrix(runif(n*nsim), nrow=n2)
+thresh50l_long = matrix(runif(n2*nsim), nrow=n2)
 
 ## prepping for other designs
 source('OtherDesigns.r')
