@@ -26,23 +26,8 @@ thresh50l_long = matrix(runif(n2*nsim), nrow=n2)
 source('OtherDesigns.r')
 skel6_05 = getprior(halfwidth = 0.05, target = 0.5, nu = M/2, nlevel = M)
 
-boin10list = list(lookup = get.boundary(target=0.5, ncohort=n, cohortsize=1, cutoff.eli=1)$boundary_tab)
-boin10list_long = list(lookup = get.boundary(target=0.5, ncohort=n2, cohortsize=1, cutoff.eli=1)$boundary_tab)
-
-### Utility for one-stop-shop bias calculation
-
-fcalc <- function(simdat, directbias = TRUE)
-{
-	m = dim(simdat$scenarios)[1]
-	n = dim(simdat$responses)[1]
-#	dcuts = cut(simdat$doses[1:n, ], (0:m)-0.5, labels = 1:m)
-	tmp = mapply(function(y,x) sapply(split(y,x), mean), x=split(simdat$doses[1:n,], col(simdat$doses[1:n,])), 
-							y=split(simdat$responses, col(simdat$responses)) )
-							
-	dout = sapply(tmp, function(x,mm) {dout = rep(NA, mm); dout[as.integer(names(x))] <- x; dout}, mm=m)
-	if(directbias) return(rowMeans(dout - simdat$scenarios, na.rm=TRUE) )
-	dout
-}
+boin10list = list(lookup = get.boundary(target=0.5, ncohort=n, cohortsize=1)$boundary_tab) #, cutoff.eli=1
+boin10list_long = list(lookup = get.boundary(target=0.5, ncohort=n2, cohortsize=1)$boundary_tab) # , cutoff.eli=1
 
 #------------- Redo UD with B=1000, and add non-UD simulations
 
@@ -78,6 +63,6 @@ boinl50midmid_long = dfsim(n2, starting = M/2, Fvals=logi50F, ensemble=nsim,
 
 save(l50midmid, crml50midmid, boinl50midmid, 
 		l50midmid_long, crml50midmid_long, boinl50midmid_long, 
-		file = file.path(outdir, 'biasfigs_makedata.r') ) 		
+		file = file.path(outdir, 'biasfigs_makedata.Rdata') ) 		
 
 		
