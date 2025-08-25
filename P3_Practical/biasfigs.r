@@ -2,7 +2,7 @@ rm(list=ls())
 library(cir)
 library(upndown)
 library(ggplot2)
-theme_set(theme_bw(15))
+theme_set(theme_bw(18))
 library(data.table)
 
 # For use on your own machine, change 'outdir' to where you want the figures saved

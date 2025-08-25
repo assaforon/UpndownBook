@@ -66,3 +66,4 @@ save(l50midmid, crml50midmid, boinl50midmid,
 		file = file.path(outdir, 'biasfigs_makedata.Rdata') ) 		
 
 		
+
