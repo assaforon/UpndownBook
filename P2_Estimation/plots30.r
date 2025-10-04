@@ -48,12 +48,12 @@ dev.off()
 
 #-------- Plots: point, n=30
 
-point30n1r = sideside(p30stack[grepl('^h',Framework), ], colkey = colors4)
+point30n1r = sideside(p30stack[grepl('^h',Framework) & !(estimate %in% 'dm48'), ], colkey = colors4)
 ggsave(point30n1r, file = file.path(outdir, 'sim_rmse30n1.pdf'),
 			 width = wid, height = hgt) 
 
 
-point30n1b = sideside(p30stack[grepl('^h',Framework),],
+point30n1b = sideside(p30stack[grepl('^h',Framework) & !(estimate %in% 'dm48'),],
 	metric = 'Bias', colkey = colors4, zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)
 ggsave(point30n1b, file = file.path(outdir, 'sim_bias30n1.pdf'),
 			 width = wid, height = hgt) 
@@ -62,11 +62,11 @@ ggsave(point30n1b, file = file.path(outdir, 'sim_bias30n1.pdf'),
 
 
 
-point30n2r = sideside(p30stack[!grepl('^h',Framework), ], colkey = colors4)
+point30n2r = sideside(p30stack[!grepl('^h',Framework) & !(estimate %in% 'dm48'), ], colkey = colors4)
 ggsave(point30n2r, file = file.path(outdir, 'sim_rmse30n2.pdf'),
 			 width = wid, height = hgt) 
 
-point30n2b = sideside(p30stack[!grepl('^h',Framework),],
+point30n2b = sideside(p30stack[!grepl('^h',Framework) & !(estimate %in% 'dm48'),],
 	metric = 'Bias', colkey = colors4, zoom=c(NA, NA), expansion = c(.01, .01), yref = 0)
 ggsave(point30n2b, file = file.path(outdir, 'sim_bias30n2.pdf'),
 			 width = wid, height = hgt) 
@@ -74,22 +74,22 @@ ggsave(point30n2b, file = file.path(outdir, 'sim_bias30n2.pdf'),
 
 #-------- Plots: interval
 
-int30n1c = sideside(i30stack[grepl('^h',Framework), ], metric = 'Coverage', titl = '', 
+int30n1c = sideside(i30stack[grepl('^h',Framework) & !(estimate %in% 'dm48'), ], metric = 'Coverage', titl = '', 
 		zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100, colkey = colors4)
 ggsave(int30n1c + geom_hline(yintercept = c(85,95), lty=3) + labs(y = 'Interval Coverage (%)') , file = file.path(outdir, 'sim_cover30n1.pdf'),
 			 width = wid, height = hgt) 
 
-int30n2c = sideside(i30stack[!grepl('^h',Framework), ], metric = 'Coverage', titl = '', 
+int30n2c = sideside(i30stack[!grepl('^h',Framework) & !(estimate %in% 'dm48'), ], metric = 'Coverage', titl = '', 
 	zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100, colkey = colors4)
 ggsave(int30n2c + geom_hline(yintercept = c(85,95), lty=3) + labs(y = 'Interval Coverage (%)') , file = file.path(outdir, 'sim_cover30n2.pdf'),
 			 width = wid, height = hgt) 
 
 
-int30n1w = sideside(i30stack[grepl('^h',Framework), ], metric = 'Width', titl = '', colkey = colors4)
+int30n1w = sideside(i30stack[grepl('^h',Framework) & !(estimate %in% 'dm48'), ], metric = 'Width', titl = '', colkey = colors4)
 ggsave(int30n1w, file = file.path(outdir, 'sim_width30n1.pdf'),
 			 width = wid, height = hgt) 
 
-int30n2w = sideside(i30stack[!grepl('^h',Framework), ], metric = 'Width', titl = '', colkey = colors4)
+int30n2w = sideside(i30stack[!grepl('^h',Framework) & !(estimate %in% 'dm48'), ], metric = 'Width', titl = '', colkey = colors4)
 ggsave(int30n2w, file = file.path(outdir, 'sim_width30n2.pdf'),
 			 width = wid, height = hgt) 
 

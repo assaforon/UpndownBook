@@ -85,21 +85,21 @@ pdf(file.path(outdir, 'sim_scatter90.pdf'), width = 10, height = 5.5)
 estscatter(rbind(estkw90himid,estkw90minhi), size=.4)
 dev.off()
 
-stop('scat')
+cat('scat')
 
 
 
-point90r = sideside(p90stack, titl = '')
-point90rzoom = sideside(p90stack[!(estimate %in% c('rev1', 'dm48') ), ], titl = '') 
+point90r = sideside(p90stack[!(estimate %in% c('dm48') ), ], titl = '')
+#point90rzoom = sideside(p90stack[!(estimate %in% c('rev1', 'dm48') ), ], titl = '') 
 
 ggsave(point90r, file = file.path(outdir, 'sim_rmse90.pdf'),
 			 width = wid, height = hgt) 
-ggsave(point90rzoom, file = file.path(outdir, 'sim_rmse90zoom.pdf'),
-			 width = wid, height = hgt) 
+#ggsave(point90rzoom, file = file.path(outdir, 'sim_rmse90zoom.pdf'),
+#			 width = wid, height = hgt) 
 
 point90bzoom = sideside(p90stack[estimate != 'dm48', ], metric = 'Bias', zoom=c(NA, NA), expansion = c(.01, .01), yref = 0, titl = '')
 
-ggsave(point90bzoom, file = file.path(outdir, 'sim_bias90zoom.pdf'),
+ggsave(point90bzoom, file = file.path(outdir, 'sim_bias90.pdf'),
 			 width = wid, height = hgt) 
 
 int90c = sideside(i90stack, metric = 'Coverage', titl = '', zoom=c(NA, NA), expansion = c(.01, .01), yref = 90, multip = 100)
