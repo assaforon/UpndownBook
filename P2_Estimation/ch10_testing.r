@@ -33,10 +33,17 @@ diff95ci = data.frame(point = pointdiff, lower95conf = pointdiff - sqrt(ropi03wi
 							
 ### Plotting
 
-par(mfrow = 1:2, mar = c(4,4,4,2), mgp = c(2.6, 0.5, 0), tck = -0.01, las = 1, cex.lab = 1.5, cex.axis = 1.2, cex.main = 1.7)
+layout(matrix(1:4, nrow = 2), widths = 3:2 )
+par(mar = c(4,4,4,2), mgp = c(2.6, 0.5, 0), tck = -0.01, las = 1, cex.lab = 1.5, cex.axis = 1.2, cex.main = 1.7)
+
 dosename = "Concentration (%)"
 dosevals = (5:12) / 100
 
 udplot(x = xropi03[1:39], y = yropi03, main = "Ropivacaine", ytitle = dosename, doselabels = dosevals, ylim = range(dosevals) )
 legend('bottomright',legend=c('Effective','Ineffective'),pch=c(19,1),bty='n', cex = 1.2)
 udplot(x = xlevo03[1:39], y = ylevo03, main = "Levobupivacaine", ytitle = dosename, doselabels = dosevals, ylim = range(dosevals))
+
+drplot(x = xropi03[1:39], y = yropi03, main = "Ropivacaine", xtitle = dosename, ytitle = 'Proportion Effective',
+			addest = TRUE, addcurve = TRUE, conf = 0.84, target = 0.5, xlim = range(dosevals), curvecol = 1, estcol = 1)
+drplot(x = xlevo03[1:39], y = ylevo03, main = "Levobupivacaine", xtitle = dosename, ytitle = 'Proportion Effective',
+			addest = TRUE, addcurve = TRUE, conf = 0.84, target = 0.5, xlim = range(dosevals), curvecol = 1, estcol = 1)
