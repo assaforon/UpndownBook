@@ -15,14 +15,14 @@ par(mar = c(4,4,4,2), mgp = c(2.5, 0.6, 0), tck = -0.01, las = 1, cex.lab = 1.5,
 # We need to assign the plot, b/c barplot() returns the true x values at the mid-bars
 p1 = barplot(100*cpi, 
 	main = 'Classical', xlab = 'Dose-Level', ylab = 'Asymptotic Probability/Frequency (%)')
-axis(1, at = p1, labels = 1:10)
+axis(1, at = p1, labels = 1:M)
 # Calculating x*'s x-coordinate
 #yardstick = p1[6] - p1[5]
 #abline(v = p1[5] + 0.6 * yardstick, lty = 3)
 
 p2 = barplot(100*bpi, 
 	main = 'Biased-Coin', xlab = 'Dose-Level', ylab = 'Asymptotic Probability/Frequency (%)')
-axis(1, at = p2, labels = 1:10)
+axis(1, at = p2, labels = 1:M)
 # Calculating x*'s x-coordinate
 #yardstick = p1[4] - p1[3]
 #xfrac = qlogis(btarg, location = exampleMu, scale = exampleSig) - 3
