@@ -11,6 +11,8 @@
 #  target: the desired exact target response rate between 0 and 1.
 #  digits: the rounding resolution.
 
+### You will need to also install the upndown package.
+
 #### NOTE! If the design combination you specified cannot yield the desired target, you will receive
 #      the standard R uniroot() error message: "f() values at end points not of opposite sign".
 #      In that case, check again by running gudtarg() on the two non-randomized cases.
@@ -23,7 +25,7 @@ require(upndown)
 checkTarget(target)
 checkNatural(c(cohort, lower+1, upper), parname = 'cohort, lower+1, upper', toolarge = 50)  
 if(cohort<upper || upper<=lower) stop('Order must be lower < upper <= cohort.\n')
-if(!(randomize %in% c(lower, upper)) ) stop('The value to be randomized must be on the decision boundary.\n')
+if(!(randomize %in% c(lower, upper)) ) stop('The value to be randomized must be on a decision boundary.\n')
 
 # Cases
 if(randomize == upper)
