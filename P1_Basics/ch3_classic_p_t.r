@@ -21,7 +21,7 @@ lines(100*cp10_1, lty = 2)
 lines(50*(cp10_1 + cp9_1))
 lines(100*cpi, lwd = 3)
 
-legend('topleft', lty = c(3,2,1,1), lwd = c(1,1,1,3), legend = c('p(9)', 'p(10)', '[p(9)+p(10)]/2', expression(pi)), bty = 'n', cex = 1.2) 
+legend('topleft', lty = c(3,2,1,1), lwd = c(1,1,1,3), legend = c('a(9)', 'a(10)', '[a(9)+a(10)]/2', expression(pi)), bty = 'n', cex = 1.2) 
 
 plot(100*cp29_1, type = 'l', lty = 3, main = expression(paste('Classical UDD, starting at ', d[2])),
 	xlab = 'Dose-Level', xaxt = 'n', ylab = 'Allocation Probability (%)', ylim = c(1.8, 51) )
@@ -30,6 +30,6 @@ lines(100*cp30_1, lty = 2)
 lines(50*(cp30_1 + cp29_1))
 lines(100*cpi, lwd = 3)
 
-legend('topleft', lty = c(3,2,1,1), lwd = c(1,1,1,3), legend = c('p(29)', 'p(30)', '[p(29)+p(30)]/2', expression(pi)), bty = 'n', cex = 1.2) 
+legend('topleft', lty = c(3,2,1,1), lwd = c(1,1,1,3), legend = c('a(29)', 'a(30)', '[a(29)+a(30)]/2', expression(pi)), bty = 'n', cex = 1.2) 
 
 dev.off()

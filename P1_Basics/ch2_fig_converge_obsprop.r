@@ -1,4 +1,5 @@
 source('basics_header.r')
+btarg = 0.3
 
 longdat = readRDS(file.path(outdir, 'ch2_sim_converge_obsprop.rds') )
 longn = nrow(longdat$doses)
@@ -44,7 +45,7 @@ points(log(apply(p4[plotstart:plotend,], 1, sd)) ~ xlog, pch = 'I', cex = psize)
 lines(log(abs(cumsum(pivecs[,4])/(1:999)-bpi[4])) ~ log(1:999), lwd = lwid )
 lines(log(abs(pivecs[,4]-bpi[4])) ~ log(1:999), lty = 2 )
 
-legend('bottom', legend = c('p(t)', 'Cumulative p(t)', paste('N(t)/t:', c('Mean', 'SD')) ), pch = c(NA, NA, 'o', 'I'), 
+legend('bottom', legend = c('a(t)', 'Cumulative a(t)', paste('N(t)/t:', c('Mean', 'SD')) ), pch = c(NA, NA, 'o', 'I'), 
 				lwd = c(1, lwid, 0, 0), lty = c(2,1,0,0), bty = 'n', cex = 1.3, pt.cex = 1.2)
 
 
