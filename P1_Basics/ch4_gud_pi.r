@@ -34,7 +34,7 @@ axis(1, 1:M)
 
 plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g505pi)), 
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ),
-		, main = "Median-Targeting K=5 GUDs")
+		, main = "Symmetric GUDs, Group Size 5")
 lines(g514pi, lty = lines2[2], lwd=wid)
 lines(g523pi, lty = lines2[1], lwd=wid)
 legend('topright', legend = c('(5,2,3)', '(5,1,4)', '(5,0,5)'),lty = c(lines2,'solid'), lwd = 2,

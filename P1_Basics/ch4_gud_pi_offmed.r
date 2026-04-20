@@ -17,7 +17,7 @@ par(stdpar)
 # 30th percentile
 plot(g201pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g302pi)),
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ), lty = 3,
-		main = 'Targeting the 30th Percentile')
+		main = expression(paste(Gamma, ' = 0.3') ))
 lines(g302pi, lty = 2, lwd=wid)
 lines(g402pi, lty = 1, lwd=wid)
 legend('topright', legend = c('(2,0,1)', '(3,0,2)', '(4,0,2)'),lty = 3:1, lwd = 2,
@@ -29,7 +29,7 @@ axis(1, 1:M)
 
 plot(g545pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g302pi)), 
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ),
-		, main = 'Targeting the 90th Percentile',  lty = 3, xlim = c(5, 16) )
+		, main = expression(paste(Gamma, ' = 0.9') ),  lty = 3, xlim = c(5, 16) )
 lines(g656pi, lty = 2, lwd=wid)
 lines(g767pi, lty = 1, lwd=wid)
 legend('topright', legend = c('(5,4,5)', '(6,5,6)', '(7,6,7)'),lty = 3:1, lwd = 2,
