@@ -52,12 +52,12 @@ pdf(file.path(outdir,'isotonic5.pdf'),width = 6, height = 5)
 
 par(mar=c(4,4,1,1), mgp=c(2.5,0.8,0), cex.axis = 0.8, las = 1)
 
-plot(y ~ x, data = van08fwd, type = 'l', ylim = 0:1,
-      xlab = 'Gabapentin (mg/kg)', ylab = "Proportion Effective")
-lines(lower90conf ~ x, data = van08fwd, lty = 2)
-lines(upper90conf ~ x, data = van08fwd, lty = 2)
-points(target ~ point, data = van08inv, pch = 19, cex = 2)
-lines(c(van08inv$lower90conf, van08inv$upper90conf), c(.5, .5), lwd = 1.5)
+plot(I(100*y) ~ x, data = van08fwd, type = 'l', ylim = c(0,100),
+      xlab = 'Gabapentin (mg/kg)', ylab = "Percent Effective")
+lines(I(100*lower90conf) ~ x, data = van08fwd, lty = 2)
+lines(I(100*upper90conf) ~ x, data = van08fwd, lty = 2)
+points(I(100*target) ~ point, data = van08inv, pch = 19, cex = 2)
+lines(c(van08inv$lower90conf, van08inv$upper90conf), c(50, 50), lwd = 1.5)
 
 dev.off()
 

@@ -21,7 +21,7 @@ par(stdpar)
 lines1 = c('19', '27', '66', '93')
 lines2 = c('1955', '4694')
 # (K,0,K) family
-plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g505pi)),
+plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose Level', ylim = c(1, max(g505pi)),
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ), main = '(K,0,K) GUDs')
 lines(cpi, lty = lines1[1], lwd=wid)
 lines(g202pi, lty = lines1[2], lwd=wid)
@@ -32,7 +32,7 @@ legend('topleft', legend = c('Classical (K=1)', paste('K =', 2:5)), lty = c(line
 axis(1, 1:M)
 
 
-plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g505pi)), 
+plot(g505pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose Level', ylim = c(1, max(g505pi)), 
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ),
 		, main = "Symmetric GUDs, Group Size 5")
 lines(g514pi, lty = lines2[2], lwd=wid)

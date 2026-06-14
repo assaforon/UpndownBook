@@ -32,7 +32,7 @@ i50stack = combo(e50, atomfun = imetrix, outnames = inames, finites = FALSE)
 i50stack[ , Design := factor(substr(Framework, 1, 1), 
 			labels = c('Logistic', 'Weibull') )  ]
 			
-stop('prepped')
+cat('prepped')
 
 #------------------- Plots
 

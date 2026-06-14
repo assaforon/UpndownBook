@@ -174,7 +174,8 @@ par(mar = c(3.,3.,3.,1), mgp = c(2,.6,0), tck = -0.01, las = 1)
 
 for(a in 1:nests) 
 {
-	plot(get(ests[a]) ~ true, data = estdat, main = estnames[a], cex = size, xlab = 'True Target Dose', ylab = 'Estimate', ylim = leems)
+	plot(get(ests[a]) ~ true, data = estdat, main = estnames[a], cex = size, 
+	xlab = expression(paste(F^-1, '(', Gamma, ')', sep='') ), ylab = 'Estimate', ylim = leems)
 	abline(-1, 1); abline(1, 1); abline(0, 1, lty=2)
 }
 }

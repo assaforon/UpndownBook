@@ -109,20 +109,25 @@ fiasdat = rbind(fiasdat, udll50fias, crmll50fias, boinll50fias)
 
 
 #---------------- PLot
+
+labbs = labs(x = 'Dose Level', y = 'Observed Bias of Response Rates') 
+limms = coord_cartesian(ylim = c(NA, 0.17) )
+
 p1 <- ggplot(biasdat, aes(Dose, Bias) ) + # geom_point(size=1.3) +
 		geom_rect(ymin = -Inf, ymax = Inf, xmin = M/2, xmax = M/2 +1, fill = 'gray90') +
 		geom_line(aes(lty = Design), lwd = 1) + facet_wrap(~factor(paste('n =', N), levels = paste('n =', c(n1,n2)) ) ) +
 		geom_hline(yintercept = 0, lwd = 1.5) + scale_x_continuous(breaks = 1:12) + scale_linetype_manual(values = 1:3) + 
-		theme(panel.grid.minor = element_blank() ) + labs(x = 'Dose Level', y = 'Observed Bias of Response Rates') 
+		theme(panel.grid.minor = element_blank() ) + labbs + limms
 		
 ggsave(p1, file = file.path(outdir, 'ch6_biasfig_1.pdf'), width = 12, height = 6)
+
+## Bias fix figure, keeping same vertical scale  
 
 p2 <- ggplot(fiasdat, aes(Dose, Bias) ) + # geom_point(size=1.3) +
 		geom_rect(ymin = -Inf, ymax = Inf, xmin = M/2, xmax = M/2 +1, fill = 'gray90') +
 		geom_line(aes(lty = Design), lwd = 1) + facet_wrap(~factor(paste('n =', N), levels = paste('n =', c(n1,n2)) ) ) +
 		geom_hline(yintercept = 0, lwd = 1.5) + scale_x_continuous(breaks = 1:12) + scale_linetype_manual(values = 1:3) + 
-		theme(panel.grid.minor = element_blank() ) + labs(x = 'Dose Level', y = 'Observed Bias of Response Rates') + 
-		ylim(range(biasdat$Bias)) # Keeping same vertical scale
+		theme(panel.grid.minor = element_blank() ) + labbs + limms
 		
 ggsave(p2, file = file.path(outdir, 'ch6_biasfig_2_fix.pdf'), width = 12, height = 6)
 

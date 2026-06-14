@@ -15,7 +15,7 @@ layout(t(1:2))
 par(stdpar)
 
 # 30th percentile
-plot(g201pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g302pi)),
+plot(g201pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose Level', ylim = c(1, max(g302pi)),
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ), lty = 3,
 		main = expression(paste(Gamma, ' = 0.3') ))
 lines(g302pi, lty = 2, lwd=wid)
@@ -27,7 +27,7 @@ abline(v = qlogis(0.3, location = exampleMu, scale = exampleSig), lty=3)
 axis(1, 1:M)
 
 
-plot(g545pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose-Level', ylim = c(1, max(g302pi)), 
+plot(g545pi, type = 'l', xaxt = 'n', lwd=wid, xlab = 'Dose Level', ylim = c(1, max(g302pi)), 
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ),
 		, main = expression(paste(Gamma, ' = 0.9') ),  lty = 3, xlim = c(5, 16) )
 lines(g656pi, lty = 2, lwd=wid)

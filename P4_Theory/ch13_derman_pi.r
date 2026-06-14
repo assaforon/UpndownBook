@@ -24,14 +24,14 @@ par(mfrow = 1:2, mar = c(4,4,4,2), mgp = c(2.5, 0.6, 0), tck = -0.01,
 lwid = 1.5
 
 plot(100*bpi1, type = 'l', lwd = lwid, xaxt = 'n',
-	main = expression(paste(Gamma, ' = 0.3') ), xlab = 'Dose-Level', ylab = 'Asymptotic Probability/Frequency (%)')
+	main = expression(bold(paste(Gamma, ' = 0.3')) ), xlab = 'Dose Level', ylab = 'Asymptotic Probability/Frequency (%)')
 axis(1, at =  1:M)	
 lines(100*derpi1, lwd = lwid, lty = 2)
 abline(v = qlogis(btarg1, location = exampleMu, scale = exampleSig), lty = 3)
-legend('topright', lty = 1:2, legend = c('Standard', 'Derman'), bty = 'n', cex = 1.2, lwd = lwid) 
+legend('topright', lty = 1:2, legend = c('Standard BCD', 'Derman BCD'), bty = 'n', cex = 1.2, lwd = lwid) 
 
 plot(100*bpi2, type = 'l', lwd = lwid, xlim = c(6,15), xaxt = 'n',
-	main = expression(paste(Gamma, ' = 0.9') ), xlab = 'Dose-Level', ylab = 'Asymptotic Probability/Frequency (%)')
+	main = expression(bold(paste(Gamma, ' = 0.9')) ), xlab = 'Dose Level', ylab = 'Asymptotic Probability/Frequency (%)')
 axis(1, at =  1:(2*M) )	
 lines(100*derpi2, lwd = lwid, lty = 2)
 abline(v = qlogis(btarg2, location = exampleMu, scale = exampleSig), lty = 3)

@@ -16,11 +16,11 @@ par(stdpar)
 par(cex.main = 1.7, cex.lab = 1.3) #, mar = c(,4,4,2))
 
 p1 = barplot(bpi90[showrange], 
-	xlab = 'Dose-Level', main = expression(paste(Gamma, ' = 0.9') ), ylim = c(0, max(bpi95)),
+	xlab = 'Dose Level', main = expression(paste(Gamma, ' = 0.9') ), ylim = c(0, max(bpi95)),
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ),  )
 axis(1, at = p1, labels = showrange)
 
-p2 = barplot(bpi95[showrange], xlab = 'Dose-Level', main = expression(paste(Gamma, ' = 0.95') ),
+p2 = barplot(bpi95[showrange], xlab = 'Dose Level', main = expression(paste(Gamma, ' = 0.95') ),
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) )  )
 axis(1, at = p2, labels = showrange)
 

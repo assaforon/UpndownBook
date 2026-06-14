@@ -86,7 +86,7 @@ par(mar = c(4,4,4,2), mgp = c(2.6, 0.5, 0), tck = -0.01, las = 1, cex.lab = 1.8,
 
 dosename2 = "Bupivacaine (mg)"
 dosevals2 = 2:11
-arms2 = c("Women (non-pregnant)", "Women (C-Section)", "Men")
+arms2 = c("Women (non)", "Women (C-sec)", "Men")
 
 udplot(x = c11f_x, y = c11f_y, main = paste(arms2[1],types[1]), ytitle = dosename2, doselabels = dosevals2, 
 	ylim = range(dosevals2), cex = 2 )

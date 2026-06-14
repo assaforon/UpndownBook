@@ -16,12 +16,12 @@ pdf(file.path(outdir, 'ch3_bcd_pi.pdf'), width = 14, height = 7.3)
 layout(t(1:2))
 par(stdpar)
 
-plot(exampleF, type = 'l', lwd=2, xaxt = 'n', xlab = 'Dose-Level', ylab = 'F(x)', ylim = c(0.03,0.9) )
+plot(exampleF, type = 'l', lwd=2, xaxt = 'n', xlab = 'Dose Level', ylab = 'F(x)', ylim = c(0.03,0.9) )
 lines(exp11F, lty=2, lwd=2)
 abline(h = 0.3, lty = 3)
 axis(1, at = 1:M)
 
-plot(100 * bpi, type = 'l', lwd=2, xaxt = 'n', xlab = 'Dose-Level', 
+plot(100 * bpi, type = 'l', lwd=2, xaxt = 'n', xlab = 'Dose Level', 
 		ylab = expression(paste('Stationary/Asymptotic Distribution  ',pi, ' (%)' ) ), ylim = c(1, 27) )
 lines(100 * ebpi, lty=2, lwd=2)
 axis(1, at = 1:M)
