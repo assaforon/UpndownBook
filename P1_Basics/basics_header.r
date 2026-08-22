@@ -18,7 +18,7 @@ outdir = '../../output'
 
 # "Typical" plotting parameters
 
-stdpar = par(mar = c(4,4,4,2), mgp = c(2.5, 0.6, 0), tck = -0.01, las = 1, cex.lab = 1.5, cex.axis = 1.2, cex.main = 1.7)
+stdpar = par(mar = c(4,4,4,2), mgp = c(2.5, 0.6, 0), tck = -0.01, las = 1, cex.lab = 1.8, cex.axis = 1.4, cex.main = 2)
 
 
 
