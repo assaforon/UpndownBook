@@ -28,7 +28,7 @@ mgp.axis.labels(c(5,2.,0), type='x')
 mgp.axis(1, at = seq(5, 60, 5) )
 
 drplot(kw90himid$doses[-61,chosen], kw90himid$responses[ ,chosen], target = .9, balancePt = k2targ(6, lowTarget = FALSE), 
-			addcurve = TRUE, addest = TRUE, curvethick = 2*ruler, estcol = 'magenta', obsize = 1*ruler, 
+			addcurve = TRUE, addest = TRUE, curvethick = 2*ruler, estcol = 'hotpink', obsize = 1*ruler, # magenta
 			esthick = 2*ruler, estsize = 4*ruler, xaxt = 'n',
 			ytitle = 'Positive Response Rate (%)', curvecol = forecol, symbcol = scol, percents = TRUE)
 
