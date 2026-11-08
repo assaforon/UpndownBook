@@ -11,7 +11,8 @@ hgt = 10
 
 load(file.path(outdir, 'grandsim90w.RData'))	
 
-ruler = 4
+ruler = 4 # General size benchmark for most visual paramaters
+
 png('../output/cover_image.png', width = 1100*ruler, height = 500*ruler)
 
 layout(t(1:2), widths = 9:7)
